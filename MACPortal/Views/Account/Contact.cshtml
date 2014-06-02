@@ -1,0 +1,24 @@
+﻿@model WellaMates.ViewModel.ContactVM
+
+@{
+    ViewBag.Title = "Contato";
+    Layout = "~/Views/Shared/_LayoutLogout.cshtml";
+}
+
+@section featured
+{
+}
+
+
+<div class="logout-content-big clearfix">
+    <div class="login-title image-glow hidden-xs">
+        <div class="fade-line-left"></div><i>Fale</i><div class="fade-line-right"></div><br/>
+        Conosco
+    </div>
+    <section id="loginForm">
+        @{ Html.RenderPartial("_ContactPartial", Model); }
+    </section>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

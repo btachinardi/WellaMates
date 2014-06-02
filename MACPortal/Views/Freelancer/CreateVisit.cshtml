@@ -1,0 +1,23 @@
+﻿@model WellaMates.ViewModel.FreelancerVisitCreateVM
+@using MACPortal.ViewModel
+
+@{
+    ViewBag.Title = "Nova Visita";
+    Layout = "~/Views/Shared/_LayoutMember.cshtml";
+}
+
+<div class="content-title clearfix">
+    <div class="fade-line-left"></div>
+    <h1><i>Nova Visita</i></h1>
+    <div class="fade-line-right"></div>
+    <br />
+</div>
+
+@{
+    Html.RenderPartial("_CreateVisitPartial", Model.CreateVisit);
+}
+
+@section scripts
+{
+    @{ Html.RenderPartial("_CreateVisitScriptsPartial", Model.CreateVisit); }
+}

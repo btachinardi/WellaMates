@@ -1,0 +1,146 @@
+@using System.Web.Optimization
+@using BootstrapSupport
+@using NavigationRoutes
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="shortcut icon" href="~/Content/images/favicon.ico">
+        <meta charset="utf-8">
+        <title>@ViewBag.Title - Wella Educação @if (ViewBag.Section != null)
+                                               {
+                                                   <text> | @ViewBag.Section</text>
+                                               }</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="@Styles.Url("~/content/css")" rel="stylesheet"/>
+        @RenderSection("head", required: false)
+        @Html.Partial("_html5shiv")
+        @* favicons and touch icons go here *@
+    </head>
+    <body>
+        <div class="content-container container">
+            <div class="navbar header border-bottom-gradient container" role="navigation">
+                <div class="vertical-align-outer">
+                    <div class="vertical-align-inner">
+                        @if (ViewBag.InverseNavigation == null || !ViewBag.InverseNavigation)
+                        {
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                                <p class="navbar-brand"><img class="wella-logo" src="~/Content/images/logo-wella.png" alt="Logo Wella"/> / <span class="secondary-text">EDUCAÇÃO</span></p>
+                            </div>
+                            <div class="collapse navbar-collapse">
+                                @RenderSection("header", required: false)
+                            </div>
+                        }
+                        else
+                        {
+                            <p>
+                                <img class="wella-logo" src="~/Content/images/logo-wella.png" alt="Logo Wella"/> / <span class="secondary-text">EDUCAÇÃO</span>
+                            </p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center container">
+                @RenderSection("featured", required: true)
+                @Html.Partial("_alerts")
+                @Html.Partial("_validationSummary")
+                @RenderBody()   
+            </div>
+            <div class="navbar-nav navbar-inverse text-center" style="position: relative">
+                <div class="copyright">
+                    <p class="text-white">&copy; Copyright @DateTime.Now.Year - Wella Educação - Todos os direitos reservados</p>
+                </div>
+            </div>
+        </div>
+        
+        @Scripts.Render("~/js")
+        <script type="text/javascript">
+
+            $(function() {
+                var elements = document.getElementsByClassName("text-name");
+                var i;
+                for (i = 0; i < elements.length; i++) {
+                    elements[i].innerHTML = elements[i].innerHTML.replace(/\b([a-zà-ú])([a-zà-ú]+)?\b/gim, "<span class='first-letter'>$1</span>$2")
+                }
+
+                $('.remove-col-lg-2').each(
+                    function(index) {
+                        $(this).removeClass('col-lg-2');
+                        //do stuff here for exemple...
+                    }
+                );
+
+                $('.remove-btn-default').each(
+                    function(index) {
+                        $(this).removeClass('btn-default');
+                        //do stuff here for exemple...
+                    }
+                );
+
+                $('.input-style').each(
+                    function(index) {
+                        var that = $(this);
+                        that.find('input').focusin(
+                            function() {
+                                that.addClass("selected");
+                            }
+                        );
+
+                        that.find('input').focusout(
+                            function() {
+                                that.removeClass("selected");
+                            }
+                        );
+
+                        if (that.find('input:disabled').length > 0) {
+                            that.addClass("disabled");
+                        }
+                    }
+                );
+
+            });
+        </script>
+        
+        <style>
+            .text-name {
+                text-transform: lowercase;
+            }
+
+            .first-letter {
+                text-transform: uppercase;
+            }
+        </style>
+        
+        @RenderSection("Scripts", required: false)
+        
+        <script type="text/javascript">
+            $(function () {
+                $('.carousel').carousel({
+                    interval: 5000
+                }).on('slid.bs.carousel', function (e) {
+                    var $nextImage = $('.active.item', this).next('.item').find('img.lazy-event');
+                    $nextImage.trigger("load-image");
+                });
+            });
+
+            $(function () {
+                $("img.lazy-scroll").lazyload({
+                    effect: "fadeIn",
+                    threshold: 200
+                });
+
+                $("img.lazy-event").lazyload({
+                    event: "load-image",
+                    effect: "fadeIn"
+                });
+            });
+        </script>
+    </body>
+</html>
+

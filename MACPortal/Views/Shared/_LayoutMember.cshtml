@@ -1,0 +1,133 @@
+﻿@using TwitterBootstrapMVC.Controls
+@model WellaMates.ViewModel.BaseMemberVM
+
+@{
+    //Layout = "~/Views/Shared/_Layout.cshtml"; 
+    Layout = "~/Views/Shared/_BootstrapLayout.basic.cshtml";
+}
+
+@functions{
+    private List<BootstrapActionLink> SetFreelancer(Func<string, string, string, BootstrapActionLink> ActionLink)
+    {
+        var actions = new List<BootstrapActionLink>
+        {
+            ActionLink("Home", "Index", "Freelancer"), 
+            ActionLink("Eventos", "Events", "Freelancer"), 
+            ActionLink("Visitas", "Visits", "Freelancer"), 
+            ActionLink("Mensais", "Monthlies", "Freelancer")
+        };
+        return actions;
+    }
+
+    private List<BootstrapActionLink> SetManager(Func<string, string, string, BootstrapActionLink> ActionLink)
+    {
+        var actions = new List<BootstrapActionLink>
+        {
+            ActionLink("Home", "Index", "Manager"),
+            ActionLink("Eventos", "Events", "Manager"), 
+            ActionLink("Visitas", "Visits", "Manager"), 
+            ActionLink("Mensais", "Monthlies", "Manager")
+        };
+        return actions;
+    }
+
+    private List<BootstrapActionLink> SetAdmin(Func<string, string, string, BootstrapActionLink> ActionLink)
+    {
+        var actions = new List<BootstrapActionLink>
+        {
+            ActionLink("Home", "Index", "RefundAdministrator"),
+            ActionLink("Eventos", "Events", "RefundAdministrator"), 
+            ActionLink("Visitas", "Visits", "RefundAdministrator"), 
+            ActionLink("Mensais", "Monthlies", "RefundAdministrator")
+        };
+        return actions;
+    }
+}
+
+@section header
+{
+    <div class="navbar-text navbar-right header-user-info">
+        Olá, <a class="navbar-link" href="@Url.Action("EditProfile", "Member")"><span class="text-name">@Model.User.Name</span></a>. @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", style = "display:inline-block"})) {
+                @Html.AntiForgeryToken()
+                <a href="javascript:document.getElementById('logoutForm').submit()">Sair</a>
+            }
+    </div>
+    <div class="centered-pills">
+        @using (var nav = Html.Bootstrap().Begin(new Nav().Style(NavType.Pills).Class("navbar-right")))
+        {
+            if (Model.IsFreelancer ? (Model.IsManager || Model.IsRefundAdmin) : (Model.IsManager && Model.IsRefundAdmin))
+            {
+                if (Model.IsFreelancer)
+                {
+                    using (var dd = nav.BeginDropDown(new DropDown("Freelancer")))
+                    {
+                        foreach (var bootstrapActionLink in SetFreelancer(@dd.ActionLink))
+                        {
+                            @bootstrapActionLink
+                        }
+                    }
+                }
+                
+                if (Model.IsManager)
+                {
+                    using (var dd = nav.BeginDropDown(new DropDown("Gestor")))
+                    {
+                        foreach (var bootstrapActionLink in SetManager(@dd.ActionLink))
+                        {
+                            @bootstrapActionLink
+                        }
+                    }
+                }
+
+                if (Model.IsFreelancer)
+                {
+                    using (var dd = nav.BeginDropDown(new DropDown("Admin")))
+                    {
+                        foreach (var bootstrapActionLink in SetAdmin(@dd.ActionLink))
+                        {
+                            @bootstrapActionLink
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (Model.IsFreelancer)
+                {
+                    foreach (var bootstrapActionLink in SetFreelancer(@nav.ActionLink))
+                    {
+                        @bootstrapActionLink
+                    }
+                }
+                if (Model.IsManager)
+                {
+                    foreach (var bootstrapActionLink in SetManager(@nav.ActionLink))
+                    {
+                        @bootstrapActionLink
+                    }
+                }
+                if (Model.IsRefundAdmin)
+                {
+                    foreach (var bootstrapActionLink in SetAdmin(@nav.ActionLink))
+                    {
+                        @bootstrapActionLink
+                    }
+                }
+            }
+            
+            @nav.ActionLink("Contato", "Contact", "Member")
+        }
+    </div>
+}
+<div class="member-content">
+    @RenderBody()
+    @if (ViewBag.DisableBackBt == null || !ViewBag.DisableBackBt)
+    {
+        <div class="col-xs-4" style="margin-bottom: 20px;">
+            <a class="back-bt btn btn-lg btn-default" data-back-bt="@Url.Action(ViewBag.BackAction ?? "Home", ViewBag.BackController ?? "Freelancer", ViewBag.BackParams)"><i class="glyphicon glyphicon-chevron-left"></i> Voltar</a>
+        </div>
+    }
+</div>
+@RenderSection("PostContent", required:false)
+@section scripts { @RenderSection("scripts", required:false) }
+@section featured { @RenderSection("featured", required:false) }

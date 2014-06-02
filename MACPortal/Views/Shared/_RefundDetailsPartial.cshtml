@@ -1,0 +1,28 @@
+﻿@model WellaMates.Models.Refund
+
+<div class="info-container clearfix">
+
+    <div class="col-md-4 col-sm-12 clearfix fixed-height">
+        @{ Html.RenderPartial("_RefundStatusPartial", Model.Status); }
+        <h3 class="hidden-xs">Status</h3>
+        <div class="info-content">
+            <p>@{ Html.RenderPartial("_RefundStatusNamePartial", Model.Status); }</p>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6 clearfix fixed-height">
+        <img src="~/Content/images/empty.png" class="icons" style="background-position: -280px -70px" title="Valor Total do Reembolso"/>
+        <h3 class="hidden-xs">Valor Total do Reembolso</h3>
+        <div class="info-content">
+            <p>R$ @Model.Value</p>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6 clearfix fixed-height">
+        <img src="~/Content/images/empty.png" class="icons" style="background-position: -140px -140px" title="Código"/>
+        <h3 class="hidden-xs">Código do Reembolso</h3>
+        <div class="info-content">
+            <p>@Model.RefundID</p>
+        </div>
+    </div>
+</div>

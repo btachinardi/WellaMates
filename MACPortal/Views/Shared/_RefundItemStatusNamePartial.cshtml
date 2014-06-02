@@ -1,0 +1,33 @@
+﻿@using WellaMates.Models
+@model WellaMates.Models.RefundItemStatus
+
+@switch (Model)
+{
+    case RefundItemStatus.CREATED:
+        <text>Criado</text>
+        break;
+    case RefundItemStatus.UPDATED:
+        <text>Atualizado</text>
+        break;
+    case RefundItemStatus.ACCEPTED:
+        <text>Aprovado</text>
+        break;
+    case RefundItemStatus.REJECTED:
+        <text>Rejeitado</text>
+        break;
+    case RefundItemStatus.REJECTED_NO_APPEAL:
+        <text>Rejeitado (sem apelo)</text>
+        break;
+    case RefundItemStatus.APPEALED:
+        <text>Apelado</text>
+        break;
+    case RefundItemStatus.PAID:
+        <text>Pago</text>
+        break;
+    case RefundItemStatus.DELETED:
+        <text>Deletado</text>
+        break;
+    case RefundItemStatus.SENT:
+        <text>Enviado</text>
+        break;
+}

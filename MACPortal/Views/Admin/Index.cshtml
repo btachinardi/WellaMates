@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "Área Administrativa";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Área Administrativa</h2>
+
+<p>Bem vindo à área administrativa.</p>
+<br/>
+<section id="pre-register-form" class="container-narrow">
+    
+    <h2>Fazer Upload de Imagem</h2>
+    @using (var f = Html.Bootstrap().Begin(new Form("ImportImage").FormMethod(FormMethod.Post).Type(FormType.Horizontal).HtmlAttributes(new { enctype = "multipart/form-data" })))
+    {
+
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        @f.FormGroup().File("Image").Id("Image").HelpText("Selecione a imagem que deseja fazer upload").Label().LabelText("Imagem")
+        @Html.Bootstrap().SubmitButton().AppendIcon("glyphicon glyphicon-chevron-right").Text("Fazer Upload")
+    }
+
+    <h2>Importar Planilha Excell</h2>
+    @using (var f = Html.Bootstrap().Begin(new Form("ImportExcell").FormMethod(FormMethod.Post).Type(FormType.Horizontal).HtmlAttributes(new { enctype = "multipart/form-data" })))
+    {
+
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        @f.FormGroup().File("Excell").Id("Excell").HelpText("Selecione a planilha que deseja importar").Label().LabelText("Planilha Excell")
+        @Html.Bootstrap().SubmitButton().AppendIcon("glyphicon glyphicon-chevron-right").Text("Importar")
+    }
+
+    <br/>
+
+    <p>
+    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) {
+        @Html.AntiForgeryToken()
+        <a href="javascript:document.getElementById('logoutForm').submit()">Sair Desta Conta</a>
+    }
+</section>

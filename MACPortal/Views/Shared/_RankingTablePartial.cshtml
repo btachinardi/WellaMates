@@ -1,0 +1,24 @@
+﻿@model WellaMates.ViewModel.RankingVM
+
+@using (Html.Bootstrap().Begin(new Table().Striped().Class("ranking-table")))
+{
+    var rankingsList = Model.Rankings;
+    for (int i = 0; i < rankingsList.Count; i++)
+    {
+        var ranking = rankingsList[i];
+        
+        <tr class="ranking-info-block @{
+                                          if (ranking.CurrentUser)
+                                          {
+                                            <text> ranking-info-selected </text>
+                                          }
+                                      }">
+            <td class="ranking-portrait-small">
+                <p class="avatar-portrait" style="background-image: url(@ranking.AvatarUrl?width=75)"></p>
+            </td>
+            <td class="ranking-number">@(i + 1)º</td>
+            <td class="ranking-name">@ranking.Name</td>
+            <td class="ranking-points">@ranking.Points</td>
+        </tr>
+    }
+}

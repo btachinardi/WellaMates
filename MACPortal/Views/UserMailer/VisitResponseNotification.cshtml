@@ -1,0 +1,33 @@
+@using Mvc.Mailer
+@using WellaMates.Models
+@{
+    var updates = (RefundItemUpdate[])ViewBag.Updates;
+    var visit = (Visit)ViewBag.Visit;
+    var controller = (string)ViewBag.Controller;
+}
+
+
+<p>Você recebeu uma resposta de @ViewBag.Sender na requisição de reembolso da visita de "@visit.Date.ToString("dd/MM/yyyy")":</p>
+<br/>
+@foreach (var update in updates)
+{
+    <div style="text-align: left; margin-bottom: 10px;">
+        <h2><b>@update.RefundItem.Activity</b></h2>
+        <p style="white-space: pre-wrap; border-bottom: 2px #D30F44 solid"><b>Resposta:</b> @{ Html.RenderPartial("_RefundItemStatusNamePartial", update.Status); }</p>
+        @if (!String.IsNullOrEmpty(update.Comment))
+        {
+            <b>Comentários:</b><br/>
+            <p style="white-space: pre-wrap; border: 2px #D30F44 solid; border-left:none; border-right:none;" >@update.Comment</p>
+        }
+        <strong><a href="@Url.Abs(@Url.Action("RefundItemDetail", controller, new { @id = update.RefundItemID }))">Ver Histórico</a></strong>
+    </div>
+}
+<br/>
+<strong><a href="@Url.Abs(@Url.Action("VisitDetail", controller, new { @id = visit.VisitID }))">Ver Requisição da Visita de "@visit.Date.ToString("dd/MM/yyyy")"</a></strong>
+<br/>
+<br/>
+<p>
+    Atenciosamente,<br/>
+    Equipe <strong>Wella Educação</strong>
+</p>
+

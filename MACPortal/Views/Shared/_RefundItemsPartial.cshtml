@@ -1,0 +1,53 @@
+﻿@using WellaMates.Models
+@model ICollection<WellaMates.Models.RefundItem>
+
+@using (Html.Bootstrap().Begin(new Table().Striped().Hover()))
+{
+
+    <tr>
+        <th class="hidden-xs hidden-sm">
+            #
+        </th>
+        <th>
+            Categoria
+        </th>
+        <th class="hidden-xs">
+            Atividade
+        </th>
+        <th>
+            Valor
+        </th>
+        <th>
+            Status
+        </th>
+        <th></th>
+    </tr>
+    foreach (var item in Model)
+    {
+        <tr>
+            <td class="hidden-xs hidden-sm">
+                @Html.DisplayFor(modelItem => item.RefundItemID)
+            </td>
+            <td>
+                @{ Html.RenderPartial("_RefundItemCategoryPartial", item.Category); }
+            </td>
+            <td class="hidden-xs">
+                @Html.DisplayFor(modelItem => item.Activity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Value)
+            </td>
+            <td>
+                @{ Html.RenderPartial("_RefundItemStatusNamePartial", item.Status); }
+            </td>
+            <td>
+                <a class="" href="@ViewBag.ItemDetailUrl/@item.RefundItemID">Detalhes</a>
+                @if (item.Status == RefundItemStatus.CREATED || item.Status == RefundItemStatus.UPDATED)
+                {
+                    <br/>
+                    <a class="" href="@ViewBag.EditUrl/@item.RefundID#@item.RefundItemID">Editar</a>   
+                }
+            </td>
+        </tr>
+    }
+}

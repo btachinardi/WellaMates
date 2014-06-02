@@ -1,0 +1,18 @@
+﻿@using WellaMates.Extensions
+@model IList<WellaMates.Models.File>
+
+<div style="width: 96%; margin-left: 2%; margin-right: 2%;">
+    @for(var i = 0; i < Model.Count; i++) 
+    {
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 clearfix">
+            <a href="@Model[i].FilePath" data-lightbox="imagens" title="@Model[i].Name">
+                <div style="position: relative" class="clearfix">
+                    <div class="file-info-wrapper clearfix">
+                        <span class="align-helper"></span>
+                        <img style="width: 150px" src="@Model[i].FilePath"/>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+</div>

@@ -1,0 +1,32 @@
+﻿@using WellaMates.Extensions
+@model MACPortal.ViewModel.CreateVisitVM
+
+
+<script type="text/javascript">
+
+    var g = this;
+    var raw, vm;
+    var fineBindings;
+    var deletedFines = [];
+    var deletingNum = 99999999;
+    var currentItemID = 0;
+    $(function() {
+
+        fineBindings = new Hashtable();
+        ko.bindingHandlers.fineuploader = {
+            init: function(el, valueAccessor, allBindingsAccessor, viewModel) {
+                var fineUploader = $(el);
+                proccessFineUpload(fineUploader, viewModel);
+            }
+        };
+
+        //TODO: Handle Serialization (Dates must be serialized following this example: 'vm.Refund.EndDate(vm.Date().split("T")[0]);')
+        raw = '@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Visit.EscapeProperties()))';
+        vm = ko.mapping.fromJSON(raw);
+        vm.Date(vm.Date().split("T")[0]);
+    });
+</script>
+@{ Html.RenderPartial("_CreateGenericScriptsPartial", Model);}
+
+
+

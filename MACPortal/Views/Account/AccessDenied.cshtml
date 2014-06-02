@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Acesso Negado";
+    Layout = "~/Views/Shared/_LayoutAllUsers.cshtml";
+}
+
+
+
+@section featured {
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>@ViewBag.Title.</h1>
+            </hgroup>
+            <p>Você não possui privilégios para acessar esta área.</p>
+        </div>
+    </section>
+}
+<div class="content-wrapper">
+    <p>Se você deveria ter acesso a esta área, tente o seguinte:</p>
+    <ul>
+        <li>
+            Verifique se você está conectado com uma conta que possua privilégios. Caso esteja na conta errada, @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) {
+                @Html.AntiForgeryToken()
+                <a href="javascript:document.getElementById('logoutForm').submit()">Saia de Sua Conta</a>
+            } e entre com a correta.
+        </li>
+        <li>
+            Entre em contato com um dos administradores do portal.
+        </li>
+    </ul>
+    @Html.ActionLink("Voltar", "Index", "Home")
+</div>

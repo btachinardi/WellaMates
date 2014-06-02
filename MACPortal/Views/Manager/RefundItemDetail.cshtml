@@ -1,0 +1,34 @@
+﻿@using Microsoft.Web.Mvc.Html
+@using WellaMates.Models
+@model MACPortal.ViewModel.ManagerRefundItemDetailVM
+
+@{
+    ViewBag.Title = "Detalhes do Item de Reembolso (#" + Model.RefundItem.RefundItemID + ")";
+    ViewBag.InvertStatusIcons = true;
+    Layout = "~/Views/Shared/_LayoutMember.cshtml";
+    ViewBag.BackController = "Manager";
+    ViewBag.BackAction = "RefundDetail";
+    ViewBag.BackParams = new { @id = Model.RefundItem.RefundID };
+}
+
+<div class="content-title clearfix">
+    <div class="fade-line-left"></div><h1><i>Detalhes <span class="hidden-xs">do Reembolso</span></i></h1><div class="fade-line-right"></div><br/>
+</div>
+<br/>
+<div class="col-xs-10 col-xs-push-1" style="margin-bottom: 20px;">
+    @{ Html.RenderPartial("_RefundItemsDetailsPartial", Model.RefundItem); }
+</div>
+<div>
+    <h3 style="display: inline-block;width: 100%;">Anexos</h3>
+    @{
+        Html.RenderPartial("_RefundItemsFilesPartial", Model.RefundItem.Files.ToList());
+    }
+</div>
+<div>
+    <h3 style="display: inline-block;width: 100%;">Histórico</h3>
+    @{
+        var sortedList = Model.RefundItem.History.ToList();
+        sortedList.Sort((x, y) => x.Date.CompareTo(y.Date));
+        Html.RenderPartial("_RefundItemsHistoryPartial", sortedList);
+    }
+</div>

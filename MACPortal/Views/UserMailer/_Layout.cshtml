@@ -1,0 +1,23 @@
+﻿@using System.Web.Optimization
+@using BootstrapSupport
+@using Mvc.Mailer
+@using NavigationRoutes
+<!DOCTYPE html>
+<html lang="en">
+    <body>
+        <table style="color: #D30F44; font-size: 16px; width: 100%">
+            <tr>
+                <td ></td>
+                <td align="center" style="width: 450px;">
+                    @Html.InlineImage("logo", "Wella")<span style="font-size: 37px;"> / <span style="color: #878785">EDUCAÇÃO</span></span>
+                    @RenderBody()   
+                </td>
+                <td ></td>
+            </tr>
+        </table>
+        <div style="background-color: #D30F44; color: #ffffff; text-align: center">
+            &copy; Copyright @DateTime.Now.Year - Wella Educação - Todos os direitos reservados
+        </div>
+    </body>
+</html>
+

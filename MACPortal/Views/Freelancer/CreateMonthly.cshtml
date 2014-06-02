@@ -1,0 +1,23 @@
+﻿@model WellaMates.ViewModel.FreelancerMonthlyCreateVM
+@using MACPortal.ViewModel
+
+@{
+    ViewBag.Title = "Novo Mensal";
+    Layout = "~/Views/Shared/_LayoutMember.cshtml";
+}
+
+<div class="content-title clearfix">
+    <div class="fade-line-left"></div>
+    <h1><i>Novo Reembolso Mensal</i></h1>
+    <div class="fade-line-right"></div>
+    <br />
+</div>
+
+@{
+    Html.RenderPartial("_CreateMonthlyPartial", Model.CreateMonthly);
+}
+
+@section scripts
+{
+    @{ Html.RenderPartial("_CreateMonthlyScriptsPartial", Model.CreateMonthly); }
+}

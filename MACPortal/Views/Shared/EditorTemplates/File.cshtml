@@ -1,0 +1,12 @@
+﻿@model WellaMates.Models.File
+
+@{
+    var f = Html.Bootstrap().Misc().GetFormBuilderFromViewData();
+}
+<div class="separator"></div>
+<div class="file-form-wrapper clearfix col-lg-6">
+    @Html.HiddenFor(m => m.FileID)
+    
+    @Html.Bootstrap().Button().Text("X").Size(ButtonSize.Mini).HtmlAttributes(new{style="float:right; margin-bottom:5px"});
+    @Html.FakeFileFor(m => m.FilePath)
+</div>
