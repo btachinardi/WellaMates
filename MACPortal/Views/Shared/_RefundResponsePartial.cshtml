@@ -23,7 +23,7 @@
                 Status
             </th>
         </tr>
-        foreach (var item in Model.Where(i => i.Status == RefundItemStatus.APPEALED || i.Status == RefundItemStatus.REJECTED || i.Status == RefundItemStatus.SENT))
+        foreach (var item in Model.Where(i => i.Status == 0 || i.Status == RefundItemStatus.APPEALED || i.Status == RefundItemStatus.REJECTED || i.Status == RefundItemStatus.SENT))
         {
             <tr>
                 <td class="hidden-xs hidden-sm">
@@ -70,7 +70,7 @@
                                     @if (ViewBag.InvertStatusIcons == null || ViewBag.InvertStatusIcons == false)
                                     {
                                         <option value="5">Enviar Justificativa</option>
-                                        <option value="6">Aceitar Rejeição</option>
+                                        <option value="8">Aceitar Rejeição</option>
                                     }
                                     else
                                     {
@@ -96,19 +96,22 @@
                         </div>
 
                         <!-- Anexos -->
-                        <div class="col-xs-12 form-group">
-                            <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="">
-                                Anexos<span class="required" style="visibility: hidden;">*</span>
-                            </label>
-                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <div data-bind="fineuploader: RefundItemID " class="fine-uploader clearfix"></div>                
-                            </div>                      
-                        </div>
+                        @if (ViewBag.AllowAttachments != null && ViewBag.AllowAttachments)
+                        {
+                            <div class="col-xs-12 form-group">
+                                <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="">
+                                    Anexos<span class="required" style="visibility: hidden;">*</span>
+                                </label>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div data-bind="fineuploader: '@item.RefundItemID'" class="fine-uploader clearfix"></div>                
+                                </div>                      
+                            </div>
+                        }
                     </div>
                 </td>
             </tr>
         }
     }
-
-            <button data-bind="click: SendForm" class="btn-default btn" data-loading-text="Enviando" style="width: 150px;margin-right: 30px;margin-top: 50px;">Enviar</button>
+    <button id="send-button" data-bind="click: SendForm" class="btn-default btn" data-loading-text="Enviando" style="width: 150px;margin-right: 30px;margin-top: 50px;">Enviar</button>
+    <p id="send-text" style="display: none">Enviando...</p>
 </form>

@@ -13,10 +13,42 @@ namespace MACPortal.ViewModel
         {
         }
 
-        public Refund Refund { get; set; }
+        public ResponseVM() : base("Enviar", "SendResponse", "Freelancer", "Events", "Freelancer")
+        {
+            
+        }
+
+        public Refund Refund
+        {
+            get { return _Refund; }
+            set
+            {
+                _Refund = new Refund
+                {
+                    Value = value.Value,
+                    AcceptedValue = value.AcceptedValue,
+                    RefundID = value.RefundID,
+                    RefundItems = value.RefundItems.Select(ri => new RefundItem
+                    {
+                        Activity = ri.Activity,
+                        Category = ri.Category,
+                        Files = ri.Files,
+                        ReceivedInvoice = ri.ReceivedInvoice,
+                        RefundID = ri.RefundID,
+                        RefundItemID = ri.RefundItemID,
+                        Status = ri.Status,
+                        Value = ri.Value,
+                        OtherSpecification = ri.OtherSpecification
+                    }).ToList()
+                };
+            }
+        }
+
+        private Refund _Refund;
         public RefundItemUpdate[] Updates { get; set; }
         public int OwnerID { get; set; }
         public ResponseOwnerType OwnerType { get; set; }
+        public bool AllowAttachments { get; set; }
     }
 
     public enum ResponseOwnerType

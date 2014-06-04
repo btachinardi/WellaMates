@@ -78,12 +78,14 @@ namespace MACPortal.Controllers
 
         public ActionResult EventDetail(int id)
         {
+            var @event = db.Events.First(r => r.EventID == id);
             return View(MemberHelper.SetBaseMemberVM(
                 new ManagerEventDetailVM
                 {
-                    Event = db.Events.First(r => r.EventID == id),
+                    Event = @event,
                     Response = new ResponseVM("Responder", "SendResponse", "Manager", "Events", "Manager")
                     {
+                        Refund = @event.Refund,
                         OwnerID = id,
                         OwnerType = ResponseOwnerType.EVENT
                     }
@@ -94,14 +96,16 @@ namespace MACPortal.Controllers
 
         public ActionResult MonthlyDetail(int id)
         {
+            var monthly = db.Monthlies.First(r => r.MonthlyID == id);
             return View(MemberHelper.SetBaseMemberVM(
                 new ManagerMonthlyDetailVM
                 {
-                    Monthly = db.Monthlies.First(r => r.MonthlyID == id),
+                    Monthly = monthly,
                     Response = new ResponseVM("Responder", "SendResponse", "Manager", "Monthlies", "Manager")
                     {
+                        Refund = monthly.Refund,
                         OwnerID = id,
-                        OwnerType = ResponseOwnerType.EVENT
+                        OwnerType = ResponseOwnerType.MONTHLY
                     }
                 },
                 MemberHelper.GetUserProfile(db))
@@ -110,14 +114,16 @@ namespace MACPortal.Controllers
 
         public ActionResult VisitDetail(int id)
         {
+            var visit = db.Visits.First(r => r.VisitID == id);
             return View(MemberHelper.SetBaseMemberVM(
                 new ManagerVisitDetailVM
                 {
-                    Visit = db.Visits.First(r => r.VisitID == id),
+                    Visit = visit,
                     Response = new ResponseVM("Responder", "SendResponse", "Manager", "Visits", "Manager")
                     {
+                        Refund = visit.Refund,
                         OwnerID = id,
-                        OwnerType = ResponseOwnerType.EVENT
+                        OwnerType = ResponseOwnerType.VISIT
                     }
                 },
                 MemberHelper.GetUserProfile(db))

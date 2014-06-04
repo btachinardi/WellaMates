@@ -226,6 +226,7 @@ namespace MACPortal.Helpers
                     refund = refundItem.Refund;
                 }
                 refundItem.Status = update.Status;
+                refundItem.ReceivedInvoice = update.ReceivedInvoice;
                 db.RefundItemUpdates.Add(new RefundItemUpdate
                 {
                     Date = DateTime.Now,
@@ -233,7 +234,8 @@ namespace MACPortal.Helpers
                     RefundItem = refundItem,
                     RefundProfile = refundProfile,
                     Status = refundItem.Status,
-                    Files = update.Files
+                    Files = update.Files,
+                    ReceivedInvoice = update.ReceivedInvoice
                 });
             }
 

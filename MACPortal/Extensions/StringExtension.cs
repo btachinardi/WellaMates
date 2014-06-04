@@ -35,8 +35,11 @@ namespace WellaMates.Extensions
             return value;
         }
 
-        public static T EscapeProperties<T>(this T value)
+        public static T EscapeProperties<T>(this T value, List<object> processedObjects = null)
         {
+            if (processedObjects == null) processedObjects = new List<object> { value };
+            else processedObjects.Add(value);
+
             Type type = value.GetType();
             foreach (PropertyInfo propertyInfo in type.GetProperties())
             {
@@ -53,12 +56,14 @@ namespace WellaMates.Extensions
                     {
                         foreach (var item in items)
                         {
-                            item.EscapeProperties();
+                            if (processedObjects.Contains(item)) continue;
+                            item.EscapeProperties(processedObjects);
                         }
                     }
                     else
                     {
-                        recursionValue.EscapeProperties();
+                        if (!processedObjects.Contains(recursionValue))
+                            recursionValue.EscapeProperties(processedObjects);
                     }
                 }
             }

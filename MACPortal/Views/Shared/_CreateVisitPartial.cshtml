@@ -8,60 +8,18 @@
                                        <!-- TARGET ID -->
         <input type="hidden" data-bind="value: VisitID" />
 
-        <!-- STRING: NAME -->
-        <div class="input-style col-lg-4 form-group disabled">                 <!-- INPUT NAME -->
-            <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="Name">
-            <!-- LABEL -->
-                Evento<span class="required">*</span>
-            </label>
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                              <!-- FIELD NAME -->                                                      <!-- VALIDATION MSG -->                      <!-- VALIDATION LENGTH -->                         <!-- VALIDATION MSG -->                     <!--INPUT NAME-->
-               <input data-bind="value: Name" class="form-control" data-val="true" data-val-length="O Evento não deve conter mais de 40 caracteres." data-val-length-max="40" data-val-required="O campo &#39;Evento&#39; é obrigatório" type="text" name="Name" />
-                                                               <!-- INPUT NAME -->
-                <span class="field-validation-valid" data-valmsg-for="Name" data-valmsg-replace="true"></span>
-            </div>
-        </div>
 
-        <!-- DATE: START DATE -->
+        <!-- DATE: DATE -->
         <div class=" input-style col-lg-4 form-group">                        <!-- INPUT NAME -->
-            <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="StartDate">
+            <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="Date">
                 <!-- LABEL -->
-                Início<span class="required">*</span>
+                Data<span class="required">*</span>
             </label>
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                  <!-- FIELD NAME -->                                                     <!-- VALIDATION MSG -->                         <!-- VALIDATION MSG -->                <!--   INPUT NAMES   -->
-                <input data-bind="value: StartDate" class="form-control" data-val="true" data-val-date="Formato da data invalido." data-val-required="O campo &#39;Início&#39; é obrigatório" id="StartDate" name="StartDate" type="date" value="01/01/0001 00:00:00" />
+                <input data-bind="value: Date" class="form-control" data-val="true" data-val-date="Formato da data invalido." data-val-required="O campo &#39;Data&#39; é obrigatório" id="Date" name="Date" type="date" value="01/01/0001 00:00:00" />
                                                                 <!-- INPUT NAME -->
-                <span class="field-validation-valid" data-valmsg-for="StartDate" data-valmsg-replace="true"></span>
-            </div>
-        </div>
-        
-        <!-- DATE: END DATE -->
-        <div class=" input-style col-lg-4 form-group">                        <!-- INPUT NAME -->
-            <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="EndDate">
-            <!-- LABEL -->
-                Término<span class="required">*</span>
-            </label>
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <!-- FIELD NAME -->                                                     <!-- VALIDATION MSG -->                         <!-- VALIDATION MSG -->      <!--   INPUT NAMES   -->
-                <input data-bind="value: EndDate" class="form-control" data-val="true" data-val-date="Formato da data invalido." data-val-required="O campo &#39;Término&#39; é obrigatório" id="EndDate" name="EndDate" type="date" value="01/01/0001 00:00:00" />
-                                                                <!-- INPUT NAME -->
-                <span class="field-validation-valid" data-valmsg-for="EndDate" data-valmsg-replace="true"></span>
-            </div>
-        </div>
-
-        <!-- TEXTBOX: COMMENTS -->
-        <div class=" col-lg-12 form-group">                                      <!-- INPUT NAME -->
-            <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="Comments">
-                <!-- LABEL -->
-                Comentários<span class="required">*</span>
-            </label>
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                     <!-- FIELD NAME -->                                                          <!-- VALIDATION MSG -->                  <!--   INPUT NAMES   -->
-                <textarea data-bind="value: Comments" class="form-control" data-val="true" data-val-required="O campo &#39;Comentários&#39; é obrigatório" id="Comments" name="Comments" rows="2">
-                </textarea>
-                                                                <!-- INPUT NAME -->
-                <span class="field-validation-valid" data-valmsg-for="Comments" data-valmsg-replace="true"></span>
+                <span class="field-validation-valid" data-valmsg-for="Date" data-valmsg-replace="true"></span>
             </div>
         </div>
         
@@ -154,8 +112,6 @@
                 </div>
             </div>
         </div>
-        <div class="clearfix">
-            <button data-bind="click: SendForm" class="btn-default btn col-sm-4 col-sm-push-2" data-loading-text="Enviando" style="margin-right: 30px;margin-top: 50px;">@Model.SubmitText</button>
-        </div>
+        @{ Html.RenderPartial("_CreateButtonPartial", Model.SubmitText);}
 </form>
 </div>

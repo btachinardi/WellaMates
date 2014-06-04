@@ -71,6 +71,10 @@ body {
     height: 200px;
 }
 
+#response-form {
+    margin-bottom: 15px;
+}
+
 .content-container
 {
     margin: auto;

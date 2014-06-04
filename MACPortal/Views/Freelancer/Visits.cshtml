@@ -56,7 +56,8 @@
                 <b>R$</b>@Html.DisplayFor(modelItem => item.Refund.Value)
             </td>
             <td>
-                @{ Html.RenderPartial("_RefundStatusPartial", item.Refund.Status); }
+                <span class="hidden-sm hidden-xs">@{ Html.RenderPartial("_RefundStatusPartial", item.Refund.Status); }</span>
+                @{ Html.RenderPartial("_RefundStatusNamePartial", item.Refund.Status); }
             </td>
             <td>
                 <a class="" href="@Url.Action("VisitDetail", "Freelancer")/@item.VisitID">Detalhes</a>

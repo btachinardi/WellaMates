@@ -38,13 +38,11 @@ namespace HelloWorld.Code.DataAccess
                     {
                         if (Mode == UnitOfWorkMode.Administrator)
                         {
-                            EventRepository = new Repository<Event>(Context, e => true, searchProvider);
-                            //EventRepository = new Repository<Event>(Context, e => (int)e.Refund.Status == (int)RefundStatus.ACCEPTED || (int)e.Refund.Status == (int)RefundStatus.PAID, searchProvider);
+                            EventRepository = new Repository<Event>(Context, e => (int)e.Refund.Status == (int)RefundStatus.ACCEPTED || (int)e.Refund.Status == (int)RefundStatus.PAID, searchProvider);
                         }
                         else if (Mode == UnitOfWorkMode.Freelancer)
                         {
-                            EventRepository = new Repository<Event>(Context, e => true, searchProvider);
-                            //EventRepository = new Repository<Event>(Context, e => e.FreelancerID == User.UserID && e.Refund.RefundItems.All(ri => ri.Category != RefundItemCategory.SALARY), searchProvider);
+                            EventRepository = new Repository<Event>(Context, e => e.FreelancerID == User.UserID, searchProvider);
                         }
                         else if (Mode == UnitOfWorkMode.Manager)
                         {
@@ -78,13 +76,11 @@ namespace HelloWorld.Code.DataAccess
                     {
                         if (Mode == UnitOfWorkMode.Administrator)
                         {
-                            MonthlyRepository = new Repository<Monthly>(Context, e => true, searchProvider);
-                            //MonthlyRepository = new Repository<Monthly>(Context, e => (int)e.Refund.Status == (int)RefundStatus.ACCEPTED || (int)e.Refund.Status == (int)RefundStatus.PAID, searchProvider);
+                            MonthlyRepository = new Repository<Monthly>(Context, e => (int)e.Refund.Status == (int)RefundStatus.ACCEPTED || (int)e.Refund.Status == (int)RefundStatus.PAID, searchProvider);
                         }
                         else if (Mode == UnitOfWorkMode.Freelancer)
                         {
-                            MonthlyRepository = new Repository<Monthly>(Context, e => true, searchProvider);
-                            //MonthlyRepository = new Repository<Monthly>(Context, e => e.FreelancerID == User.UserID && e.Refund.RefundItems.All(ri => ri.Category != RefundItemCategory.SALARY), searchProvider);
+                            MonthlyRepository = new Repository<Monthly>(Context, e => e.FreelancerID == User.UserID, searchProvider);
                         }
                         else if (Mode == UnitOfWorkMode.Manager)
                         {
@@ -117,13 +113,11 @@ namespace HelloWorld.Code.DataAccess
                     {
                         if (Mode == UnitOfWorkMode.Administrator)
                         {
-                            VisitRepository = new Repository<Visit>(Context, e => true, searchProvider);
-                            //VisitRepository = new Repository<Visit>(Context, e => (int)e.Refund.Status == (int)RefundStatus.ACCEPTED || (int)e.Refund.Status == (int)RefundStatus.PAID, searchProvider);
+                            VisitRepository = new Repository<Visit>(Context, e => (int)e.Refund.Status == (int)RefundStatus.ACCEPTED || (int)e.Refund.Status == (int)RefundStatus.PAID, searchProvider);
                         }
                         else if (Mode == UnitOfWorkMode.Freelancer)
                         {
-                            VisitRepository = new Repository<Visit>(Context, e => true, searchProvider);
-                            //VisitRepository = new Repository<Visit>(Context, e => e.FreelancerID == User.UserID && e.Refund.RefundItems.All(ri => ri.Category != RefundItemCategory.SALARY), searchProvider);
+                            VisitRepository = new Repository<Visit>(Context, e => e.FreelancerID == User.UserID, searchProvider);
                         }
                         else if (Mode == UnitOfWorkMode.Manager)
                         {

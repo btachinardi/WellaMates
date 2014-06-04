@@ -75,12 +75,14 @@ namespace WellaMates.Controllers
 
         public ActionResult EventDetail(int id)
         {
+            var @event = db.Events.First(r => r.EventID == id);
             return View(MemberHelper.SetBaseMemberVM(
                 new FreelancerEventDetailVM
                 {
-                    Event = db.Events.First(r => r.EventID == id),
+                    Event = @event,
                     Response = new ResponseVM("Responder", "SendResponse", "Freelancer", "Events", "Freelancer")
                     {
+                        Refund = @event.Refund,
                         OwnerID = id,
                         OwnerType = ResponseOwnerType.EVENT
                     }
@@ -91,14 +93,17 @@ namespace WellaMates.Controllers
 
         public ActionResult MonthlyDetail(int id)
         {
+            var monthly = db.Monthlies.First(r => r.MonthlyID == id);
             return View(MemberHelper.SetBaseMemberVM(
                 new FreelancerMonthlyDetailVM
                 {
-                    Monthly = db.Monthlies.First(r => r.MonthlyID == id),
+                    Monthly = monthly,
                     Response = new ResponseVM("Responder", "SendResponse", "Freelancer", "Monthlies", "Freelancer")
                     {
+                        Refund = monthly.Refund,
                         OwnerID = id,
-                        OwnerType = ResponseOwnerType.MONTHLY
+                        OwnerType = ResponseOwnerType.MONTHLY,
+                        AllowAttachments = true,
                     }
                 },
                 MemberHelper.GetUserProfile(db))
@@ -107,12 +112,14 @@ namespace WellaMates.Controllers
 
         public ActionResult VisitDetail(int id)
         {
+            var visit = db.Visits.First(r => r.VisitID == id);
             return View(MemberHelper.SetBaseMemberVM(
                 new FreelancerVisitDetailVM
                 {
-                    Visit = db.Visits.First(r => r.VisitID == id),
+                    Visit = visit,
                     Response = new ResponseVM("Responder", "SendResponse", "Freelancer", "Visits", "Freelancer")
                     {
+                        Refund = visit.Refund,
                         OwnerID = id,
                         OwnerType = ResponseOwnerType.VISIT
                     }

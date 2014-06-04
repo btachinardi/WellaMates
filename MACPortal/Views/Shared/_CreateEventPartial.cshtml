@@ -154,8 +154,6 @@
                 </div>
             </div>
         </div>
-        <div class="clearfix">
-            <button data-bind="click: SendForm" class="btn-default btn col-sm-4 col-sm-push-2" data-loading-text="Enviando" style="margin-right: 30px;margin-top: 50px;">@Model.SubmitText</button>
-        </div>
+        @{ Html.RenderPartial("_CreateButtonPartial", Model.SubmitText);}
 </form>
 </div>

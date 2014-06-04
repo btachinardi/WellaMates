@@ -1,5 +1,15 @@
-﻿@using WellaMates.Extensions
+﻿@using BootstrapSupport
+@using Newtonsoft.Json
+@using WellaMates.Extensions
 @model MACPortal.ViewModel.ResponseVM
+@{
+    var typeAsInt = (int)Model.OwnerType;
+    var rawRefund = Html.Raw(JsonConvert.SerializeObject(Model.Refund.EscapeProperties(), Formatting.None,
+        new JsonSerializerSettings
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        }));
+}
 
 
 <script type="text/javascript">
@@ -11,6 +21,11 @@
     var deletingNum = 99999999;
     var currentItemID = 0;
     var proccessResponseFineUpload;
+
+    @if (ViewBag.UseItemStatus != null && ViewBag.UseItemStatus == true)
+    {
+        <text>var useItemStatus = function () { return true; };</text>
+    }
     
     @if (ViewBag.InvertStatusIcons == null || ViewBag.InvertStatusIcons == false)
     {
@@ -25,7 +40,7 @@
              proccessFineUpload(fineUploader, viewModel);
         };
 
-        raw = '@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Refund.EscapeProperties()))';
+        raw = '@rawRefund';
         vm = ko.mapping.fromJSON(raw);
 
         vm.Submit = function () {
@@ -45,23 +60,23 @@
                 }
                 updates.push({
                     Comment: ri.Comment(),
+                    ReceivedInvoice: ri.ReceivedInvoice(),
                     RefundItemID: ri.RefundItemID(),
                     Status: ri.Status(),
                     RefundItemUpdateID: 0,
                     Changelog: "",
                     Date: null,
-                    RefundID: 0,
-                    RefundProfileID:0,
                     Files: ri.Files()
                 });
             }
             console.log(updates.lenght);
             var responseVM = {
                 OwnerID: '@Model.OwnerID',
-                OwnerType: '@Model.OwnerType',
+                OwnerType: '@typeAsInt',
                 Updates: updates
             };
             var json = JSON.stringify(responseVM);
+            console.log(json);
             $.ajax({
                 url: '@Url.Action(Model.SubmitAction, Model.SubmitController)',
                 type: 'POST',
@@ -82,6 +97,8 @@
                     console.log("Completed");
                 }
             });
+            $("#send-button").hide();
+            $("#send-text").fadeIn();
         };
 
         var finishSuccess = function () {
@@ -107,6 +124,7 @@
             vm.Submit();
         };
 
+        console.log("BINDING");
         ko.applyBindings(vm);
 
         var targetItem = window.location.hash;

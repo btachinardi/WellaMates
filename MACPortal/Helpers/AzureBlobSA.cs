@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using MACPortal.Controllers;
+using Microsoft.Ajax.Utilities;
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.StorageClient;
 using WellaMates.DAL;
@@ -91,6 +92,7 @@ namespace MACPortal.Helpers
             return returnValue;
         }
 
+        private static List<File> _ProcessedFiles = new List<File>(); 
         public static IEnumerable<WellaMates.Models.File> ProcessFiles(IEnumerable<WellaMates.Models.File> files)
         {
             var storageAccount = CloudStorageAccount.Parse(
@@ -116,9 +118,19 @@ namespace MACPortal.Helpers
             var processFiles = files as File[] ?? files.ToArray();
             foreach (var file in processFiles)
             {
-                file.FilePath =
-                    sasBlobClient.GetBlobReference(AzureBlobSA.REFUND_FILES_CONTAINER + @"/" + file.FilePath)
-                        .Uri.AbsoluteUri + sas;
+                File oldFile = _ProcessedFiles.FirstOrDefault(f => f.FileID == file.FileID);
+                if (oldFile != null)
+                {
+                    file.FilePath = oldFile.FilePath;
+                }
+                else
+                {
+                    file.FilePath =
+                       sasBlobClient.GetBlobReference(AzureBlobSA.REFUND_FILES_CONTAINER + @"/" + file.FilePath)
+                           .Uri.AbsoluteUri + sas;
+                    _ProcessedFiles.Add(file);
+                }
+                
             }
             return processFiles;
         }

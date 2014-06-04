@@ -105,7 +105,9 @@ namespace WellaMates.Models
 
         public void Update()
         {
-            List<RefundItem> NotDeletedItems = RefundItems == null ? new List<RefundItem>() : RefundItems.Where(ri => ri.Status != RefundItemStatus.DELETED).ToList();
+            List<RefundItem> NotDeletedItems = RefundItems == null ? new List<RefundItem>() : RefundItems.Where(ri => 
+                ri.Status != RefundItemStatus.DELETED && 
+                ri.Status != RefundItemStatus.REJECTED_NO_APPEAL).ToList();
             //Status
             if (!NotDeletedItems.Any() ||
                 NotDeletedItems.Any(ri => ri.Status == RefundItemStatus.UPDATED || ri.Status == RefundItemStatus.CREATED))
@@ -134,7 +136,7 @@ namespace WellaMates.Models
             }
 
             //Value
-            Value = RefundItems == null ? 0 : RefundItems.Sum(item => item.Status != RefundItemStatus.DELETED ? item.Value : 0);
+            Value = NotDeletedItems.Sum(item => item.Value);
 
             //Approved Value
             AcceptedValue = RefundItems == null ? 0 : RefundItems.Sum(item => (item.Status == RefundItemStatus.ACCEPTED ||
@@ -226,6 +228,9 @@ namespace WellaMates.Models
 
         [Display(Name = "Anexos")]
         public virtual ICollection<File> Files { get; set; }
+
+        [Display(Name = "Nota Fiscal Recebida?")]
+        public bool ReceivedInvoice { get; set; }
     }
     
     public enum FreelancerType

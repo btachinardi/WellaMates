@@ -4,7 +4,11 @@
 
 @{
     ViewBag.Title = "Detalhes do Item de Reembolso (#" + Model.RefundItem.RefundItemID + ")";
+    ViewBag.InvertStatusIcons = true;
     Layout = "~/Views/Shared/_LayoutMember.cshtml";
+    ViewBag.BackController = "RefundAdministrator";
+    ViewBag.BackAction = "RefundDetail";
+    ViewBag.BackParams = new { @id = Model.RefundItem.RefundID };
 }
 
 <div class="content-title clearfix">
