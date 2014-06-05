@@ -106,8 +106,7 @@ namespace WellaMates.Models
         public void Update()
         {
             List<RefundItem> NotDeletedItems = RefundItems == null ? new List<RefundItem>() : RefundItems.Where(ri => 
-                ri.Status != RefundItemStatus.DELETED && 
-                ri.Status != RefundItemStatus.REJECTED_NO_APPEAL).ToList();
+                ri.Status != RefundItemStatus.DELETED).ToList();
             //Status
             if (!NotDeletedItems.Any() ||
                 NotDeletedItems.Any(ri => ri.Status == RefundItemStatus.UPDATED || ri.Status == RefundItemStatus.CREATED))

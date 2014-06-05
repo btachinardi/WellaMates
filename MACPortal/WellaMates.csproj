@@ -870,7 +870,6 @@
     <Content Include="Views\Shared\_RefundResponsePartial.cshtml" />
     <Content Include="Views\Shared\_RefundItemsFilesSmallPartial.cshtml" />
     <Content Include="Views\Shared\_RefundResponseScriptsPartial.cshtml" />
-    <Content Include="Views\UserMailer\SendNotification.cshtml" />
     <Content Include="Views\Freelancer\Monthlies.cshtml" />
     <Content Include="Views\Freelancer\Events.cshtml" />
     <Content Include="Views\Freelancer\Visits.cshtml" />
@@ -909,6 +908,9 @@
     <Content Include="Views\RefundAdministrator\VisitDetail.cshtml" />
     <Content Include="Views\RefundAdministrator\Visits.cshtml" />
     <Content Include="Views\Shared\_RefundResponseAdminPartial.cshtml" />
+    <Content Include="Views\UserMailer\SendEventNotification.cshtml" />
+    <Content Include="Views\UserMailer\SendMonthlyNotification.cshtml" />
+    <Content Include="Views\UserMailer\SendVisitNotification.cshtml" />
     <None Include="Web.Backload.Default.config" />
     <None Include="Web.Backload.xsd">
       <SubType>Designer</SubType>

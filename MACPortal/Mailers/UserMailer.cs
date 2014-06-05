@@ -86,7 +86,7 @@ namespace WellaMates.Mailers
             ViewBag.VisitDate = visitDate;
             var message = Populate(x =>
             {
-                x.Subject = string.Format("Nova requisição de reembolso por {0}: Vista de \"{1}\"", sender, visitDate);
+                x.Subject = string.Format("Nova requisição de reembolso por {0}: Visita de \"{1}\"", sender, visitDate);
                 x.From = new MailAddress("equipe@wellaeducacao.com.br", "Equipe Wella Educação");
                 x.ViewName = "SendVisitNotification";
                 x.To.Add(email);

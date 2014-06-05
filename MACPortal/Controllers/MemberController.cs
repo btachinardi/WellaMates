@@ -128,7 +128,7 @@ namespace MACPortal.Controllers
             contact.Email = user.ContactInfo.Email;
 
             var mailer = new UserMailer();
-            mailer.Contact(contact.Name, contact.Email, contact.Title, contact.Message, Server.MapPath("~/Content/images/logo-with-products-smaller.png")).Send();
+            mailer.Contact(contact.Name, contact.Email, contact.Title, contact.Message, Server.MapPath("~/Content/images/logo-wella.png")).Send();
             Success("Mensagem enviada com sucesso! Em breve entraremos em contato com você.");
             return RedirectToAction("Contact");
         }

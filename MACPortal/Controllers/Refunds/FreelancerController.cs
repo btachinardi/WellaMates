@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -166,7 +167,7 @@ namespace WellaMates.Controllers
                 if (ModelState.IsValid)
                 {
                     Event.FreelancerID = user.UserID;
-                    ProcessRefundCreation(Event.Refund);
+                    ProcessRefundCreation(Event.Refund, user);
                     db.Events.Add(Event);
                     db.SaveChanges();
                     if (Event.Refund.RefundItems.Count > 0)
@@ -206,7 +207,7 @@ namespace WellaMates.Controllers
                 if (ModelState.IsValid)
                 {
                     Monthly.FreelancerID = user.UserID;
-                    ProcessRefundCreation(Monthly.Refund);
+                    ProcessRefundCreation(Monthly.Refund, user);
                     db.Monthlies.Add(Monthly);
                     db.SaveChanges();
                     SendMonthlyNotification(user, Monthly);
@@ -245,7 +246,7 @@ namespace WellaMates.Controllers
                 if (ModelState.IsValid)
                 {
                     Visit.FreelancerID = user.UserID;
-                    ProcessRefundCreation(Visit.Refund);
+                    ProcessRefundCreation(Visit.Refund, user);
                     db.Visits.Add(Visit);
                     db.SaveChanges();
                     if (Visit.Refund.RefundItems.Count > 0)
@@ -396,12 +397,22 @@ namespace WellaMates.Controllers
             return true;
         }
 
-        private void ProcessRefundCreation(Refund refund)
+        private void ProcessRefundCreation(Refund refund, UserProfile user)
         {
             refund.Update();
             foreach (var refundItem in refund.RefundItems)
             {
                 refundItem.Status = RefundItemStatus.SENT;
+                refundItem.History = new Collection<RefundItemUpdate>
+                {
+                    new RefundItemUpdate
+                    {
+                        Date = DateTime.Now,
+                        Status = RefundItemStatus.SENT,
+                        RefundItem = refundItem,
+                        RefundProfileID = user.UserID
+                    }
+                };
             }
         }
 

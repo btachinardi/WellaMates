@@ -139,7 +139,7 @@ ko.bindingHandlers.response = {
         }
 
         item.Comment = ko.observable("");
-        item.Status(window.useItemStatus() ? item.Status() : window.startingResponse());
+        item.Status(window.useItemStatus != null && window.useItemStatus() ? item.Status() : window.startingResponse());
         item.ReceivedInvoice(item.ReceivedInvoice() == false ? "false" : "true");
 
         // Make a modified binding context, with a extra properties, and apply it to descendant elements
