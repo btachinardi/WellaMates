@@ -87,7 +87,8 @@ namespace MACPortal.Controllers
                     {
                         Refund = @event.Refund,
                         OwnerID = id,
-                        OwnerType = ResponseOwnerType.EVENT
+                        OwnerType = ResponseOwnerType.EVENT,
+                        AllowAttachments = true
                     }
                 },
                 MemberHelper.GetUserProfile(db))
@@ -105,7 +106,8 @@ namespace MACPortal.Controllers
                     {
                         Refund = monthly.Refund,
                         OwnerID = id,
-                        OwnerType = ResponseOwnerType.MONTHLY
+                        OwnerType = ResponseOwnerType.MONTHLY,
+                        AllowAttachments = true
                     }
                 },
                 MemberHelper.GetUserProfile(db))
@@ -123,7 +125,8 @@ namespace MACPortal.Controllers
                     {
                         Refund = visit.Refund,
                         OwnerID = id,
-                        OwnerType = ResponseOwnerType.VISIT
+                        OwnerType = ResponseOwnerType.VISIT,
+                        AllowAttachments = true
                     }
                 },
                 MemberHelper.GetUserProfile(db))
@@ -152,13 +155,13 @@ namespace MACPortal.Controllers
 
             if (MemberHelper.SendResponse(db, user.RefundProfile, response.Updates))
             {
-                ResponseNotification(user, response);
+                ResponseNotification(response, user.PersonalInfo.ArtisticName ?? user.PersonalInfo.Name, db, Server);
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
             return new HttpResponseMessage(HttpStatusCode.InternalServerError);
         }
 
-        private void ResponseNotification(UserProfile user, ResponseVM response)
+        public static void ResponseNotification(ResponseVM response, string responsible, PortalContext db, HttpServerUtilityBase server)
         {
             foreach (var update in response.Updates)
             {
@@ -173,10 +176,10 @@ namespace MACPortal.Controllers
                     mailer.EventResponseNotification(
                         Event.Freelancer.RefundProfile.User.ContactInfo.Email,
                         "Freelancer",
-                        user.PersonalInfo.ArtisticName ?? user.PersonalInfo.Name,
+                        responsible,
                         Event,
                         response.Updates,
-                        Server.MapPath("~/Content/images/logo-wella.png")
+                        server.MapPath("~/Content/images/logo-wella.png")
                         ).Send();
                     break;
 
@@ -185,10 +188,10 @@ namespace MACPortal.Controllers
                     mailer.VisitResponseNotification(
                         visit.Freelancer.RefundProfile.User.ContactInfo.Email,
                         "Freelancer",
-                        user.PersonalInfo.ArtisticName ?? user.PersonalInfo.Name,
+                        responsible,
                         visit,
                         response.Updates,
-                        Server.MapPath("~/Content/images/logo-wella.png")
+                        server.MapPath("~/Content/images/logo-wella.png")
                         ).Send();
                     break;
 
@@ -197,10 +200,10 @@ namespace MACPortal.Controllers
                     mailer.MonthlyResponseNotification(
                         monthly.Freelancer.RefundProfile.User.ContactInfo.Email,
                         "Freelancer",
-                        user.PersonalInfo.ArtisticName ?? user.PersonalInfo.Name,
+                        responsible,
                         monthly,
                         response.Updates,
-                        Server.MapPath("~/Content/images/logo-wella.png")
+                        server.MapPath("~/Content/images/logo-wella.png")
                         ).Send();
                     break;
             }

@@ -123,7 +123,7 @@ namespace WellaMates.Models
             }
             else if (NotDeletedItems.All(r => r.Status == RefundItemStatus.ACCEPTED || r.Status == RefundItemStatus.REJECTED_NO_APPEAL || r.Status == RefundItemStatus.PAID))
             {
-                Status = RefundStatus.ACCEPTED;
+                Status = PaymentDate == default(DateTime) ? RefundStatus.ACCEPTED : RefundStatus.TO_BE_PAID;
             }
             else if (NotDeletedItems.Any(r => r.Status == RefundItemStatus.REJECTED))
             {
@@ -135,12 +135,15 @@ namespace WellaMates.Models
             }
 
             //Value
-            Value = NotDeletedItems.Sum(item => item.Value);
+            Value = NotDeletedItems.Count > 0 ? NotDeletedItems.Sum(item => item.Value) : 0;
 
             //Approved Value
             AcceptedValue = RefundItems == null ? 0 : RefundItems.Sum(item => (item.Status == RefundItemStatus.ACCEPTED ||
                     item.Status == RefundItemStatus.PAID) && item.Status != RefundItemStatus.DELETED ? item.Value : 0);
         }
+
+        [Display(Name = "Data do Pagamento")]
+        public DateTime PaymentDate { get; set; }
 
         [Display(Name = "Valor")]
         public decimal Value { get; set; }
@@ -159,13 +162,18 @@ namespace WellaMates.Models
         [Required(ErrorMessage = "O campo 'Categoria' é obrigatório")]
         public RefundItemCategory Category { get; set; }
 
+        [Display(Name = "Sub Categoria")]
+        public RefundItemSubCategory SubCategory { get; set; }
+
+        [Display(Name = "Data")]
+        public DateTime Date { get; set; }
+
         [Display(Name = "Especificação")]
         [StringLength(40, ErrorMessage = "A {0} não deve conter mais de {1} caracteres.")]
         public string OtherSpecification { get; set; }
 
         [Display(Name = "Atividade")]
         [Required(ErrorMessage = "O campo 'Atividade' é obrigatório")]
-        [StringLength(40, ErrorMessage = "A {0} não deve conter mais de {1} caracteres.")]
         public string Activity { get; set; }
 
         [Display(Name = "Status")]
@@ -175,6 +183,9 @@ namespace WellaMates.Models
         [Required(ErrorMessage = "O campo 'Valor' é obrigatório")]
         [DataType(DataType.Currency)]
         public decimal Value { get; set; }
+
+        [Display(Name = "KM")]
+        public decimal KM { get; set; }
 
         [Display(Name = "Nota Fiscal Recebida?")]
         public bool ReceivedInvoice { get; set; }
@@ -255,7 +266,9 @@ namespace WellaMates.Models
         [Display(Name = "Editando")]
         EDITING = 6,
         [Display(Name = "Sem Reembolso")]
-        NON_EXISTENT = 7
+        NON_EXISTENT = 7,
+        [Display(Name = "Pago")]
+        TO_BE_PAID = 8
     }
 
     public enum RefundItemStatus
@@ -293,11 +306,42 @@ namespace WellaMates.Models
         [Display(Name = "Salario")]
         SALARY = 5,
         [Display(Name = "Xerox/Cópia")]
-        XEROX_COPY = 6
+        XEROX_COPY = 6,
+        [Display(Name = "Correio/Sedex")]
+        MAIL_SEDEX = 7,
+        [Display(Name = "Excesso de Bagagem")]
+        LUGGAGE = 8
+    }
+
+    public enum RefundItemSubCategory
+    {
+        [Display(Name = "Nenhuma")]
+        NONE = 0,
+        [Display(Name = "Reembolso de KM")]
+        TRANSPORTATION_KM = 1,
+        [Display(Name = "Reembolso de Passagem Rodoviária")]
+        TRANSPORTATION_BUS_TICKET = 2,
+        [Display(Name = "Pedágio")]
+        TRANSPORTATION_TOOL = 3,
+        [Display(Name = "Taxi")]
+        TRANSPORTATION_TAXI = 4,
+
+        [Display(Name = "Almoço")]
+        MEAL_LUNCH = 11,
+        [Display(Name = "Jantar")]
+        MEAL_DINNER = 12
+    }
+    
+    public interface IRefundOwner
+    {
+        Refund Refund { get; set; }
+        int RefundID { get; set; }
+        Freelancer Freelancer { get; set; }
+        int FreelancerID { get; set; }
     }
 
     [Table("Monthly")]
-    public class Monthly
+    public class Monthly : IRefundOwner
     {
 
         [Display(Name = "#")]
@@ -324,7 +368,7 @@ namespace WellaMates.Models
     }
 
     [Table("Event")]
-    public class Event
+    public class Event : IRefundOwner
     {
         [Display(Name = "#")]
         public int EventID { get; set; }
@@ -362,7 +406,7 @@ namespace WellaMates.Models
     }
 
     [Table("Visit")]
-    public class Visit
+    public class Visit : IRefundOwner
     {
 
         [Display(Name = "#")]

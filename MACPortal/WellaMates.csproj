@@ -279,10 +279,12 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BootstrapBaseController.cs" />
     <Compile Include="Controllers\FilesController.cs" />
+    <Compile Include="Controllers\Refunds\RefundVisualisationController.cs" />
     <Compile Include="Controllers\Refunds\RefundAdministratorController.cs" />
     <Compile Include="Controllers\Refunds\ManagerController.cs" />
     <Compile Include="Controllers\MemberController.cs" />
     <Compile Include="Controllers\Refunds\FreelancerController.cs" />
+    <Compile Include="Controllers\Refunds\RefundConstants.cs" />
     <Compile Include="DAL\ImageMultipartFormDataStreamProvider.cs" />
     <Compile Include="DAL\PortalContext.cs" />
     <Compile Include="DataAccess\IRepository.cs" />
@@ -385,6 +387,22 @@
     <Compile Include="Migrations\201406042010525_ReceivedInvoiceUpdate.Designer.cs">
       <DependentUpon>201406042010525_ReceivedInvoiceUpdate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201408290134453_RefundItemsSubCategories.cs" />
+    <Compile Include="Migrations\201408290134453_RefundItemsSubCategories.Designer.cs">
+      <DependentUpon>201408290134453_RefundItemsSubCategories.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201408290414068_RefundItemDates.cs" />
+    <Compile Include="Migrations\201408290414068_RefundItemDates.Designer.cs">
+      <DependentUpon>201408290414068_RefundItemDates.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201409011942470_BiggerRefundItemActivityString.cs" />
+    <Compile Include="Migrations\201409011942470_BiggerRefundItemActivityString.Designer.cs">
+      <DependentUpon>201409011942470_BiggerRefundItemActivityString.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201409012044201_RefundPaymentDate.cs" />
+    <Compile Include="Migrations\201409012044201_RefundPaymentDate.Designer.cs">
+      <DependentUpon>201409012044201_RefundPaymentDate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\File.cs" />
@@ -441,6 +459,7 @@
     <Compile Include="ViewModel\Refund\Freelancer\FreelancerHomeVM.cs" />
     <Compile Include="ViewModel\Refund\Freelancer\FreelancerRefundsVM.cs" />
     <Compile Include="ViewModel\Refund\ResponseVM.cs" />
+    <Compile Include="ViewModel\Refund\Visualisation\VisualisationHomeVM.cs" />
     <Compile Include="ViewModel\UserVM.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -548,6 +567,7 @@
     <Content Include="Content\images\background-woman.png" />
     <Content Include="Content\images\empty.png" />
     <Content Include="Content\images\favicon.ico" />
+    <Content Include="Content\images\icons-inverted.png" />
     <Content Include="Content\images\icons.png" />
     <Content Include="Content\images\logo-wella.png" />
     <Content Include="Content\images\search.png" />
@@ -741,7 +761,6 @@
     <Content Include="Scripts\jquery-1.9.1.min.map" />
     <Content Include="Scripts\jquery-migrate-1.2.1.js" />
     <Content Include="Scripts\jquery-migrate-1.2.1.min.js" />
-    <Content Include="Scripts\jquery-scrollto.js" />
     <Content Include="Scripts\jquery-ui-1.8.24.js" />
     <Content Include="Scripts\jquery-ui-1.8.24.min.js" />
     <Content Include="Scripts\jquery.cookie.js" />
@@ -793,8 +812,6 @@
     <Content Include="Images\orderedList9.png" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Account\_ChangePasswordPartial.cshtml" />
-    <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
-    <Content Include="Views\Account\_RemoveExternalLoginsPartial.cshtml" />
     <Content Include="Views\Account\_SetPasswordPartial.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Manage.cshtml" />
@@ -820,7 +837,6 @@
     <Content Include="Views\Shared\_BootstrapLayout.basic.cshtml" />
     <Content Include="Views\Shared\_alerts.cshtml" />
     <Content Include="Views\Admin\Import.cshtml" />
-    <Content Include="Views\Avatar\Index.cshtml" />
     <Content Include="Views\Member\PreRegister.cshtml" />
     <Content Include="Views\Member\PreRegisterDone.cshtml" />
     <Content Include="Views\Account\Regulation.cshtml" />
@@ -833,8 +849,6 @@
     <Content Include="Views\Shared\_RegulationPartial.cshtml" />
     <Content Include="Views\Shared\_EditUserPartial.cshtml" />
     <Content Include="Views\Member\EditProfile.cshtml" />
-    <Content Include="Views\Shared\_RankingTablePartial.cshtml" />
-    <Content Include="Views\Shared\_RewardTierPartial.cshtml" />
     <Content Include="Views\Shared\_ListPartial.cshtml" />
     <Content Include="Views\Account\Contact.cshtml" />
     <Content Include="Views\Shared\_ContactPartial.cshtml" />
@@ -847,26 +861,20 @@
     <Content Include="Views\Shared\_RefundItemCategoryPartial.cshtml" />
     <Content Include="Views\Shared\_RefundItemStatusPartial.cshtml" />
     <Content Include="Views\Shared\_RefundItemStatusNamePartial.cshtml" />
-    <Content Include="Views\Shared\_EditRefundPartial.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\RefundItem.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\File.cshtml" />
     <Content Include="Scripts\fineup\LICENSE" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Views\Shared\_RefundItemCategoryNamePartial.cshtml" />
-    <Content Include="Views\Shared\_EditRefundScriptsPartial.cshtml" />
     <Content Include="Views\Shared\_FineUploaderPartial.cshtml" />
     <Content Include="Views\Freelancer\RefundItemDetail.cshtml" />
     <Content Include="Views\Shared\_RefundItemsDetailsPartial.cshtml" />
     <Content Include="Views\Shared\_RefundItemsHistoryPartial.cshtml" />
     <Content Include="Views\Shared\_RefundItemsFilesPartial.cshtml" />
     <Content Include="Views\Manager\Index.cshtml" />
-    <Content Include="Views\Manager\RefundDetail.cshtml" />
     <Content Include="Views\Manager\RefundItemDetail.cshtml" />
-    <Content Include="Views\Manager\Refunds.cshtml" />
-    <Content Include="Views\RefundAdministrator\RefundDetail.cshtml" />
     <Content Include="Views\RefundAdministrator\RefundItemDetail.cshtml" />
-    <Content Include="Views\RefundAdministrator\Refunds.cshtml" />
     <Content Include="Views\Shared\_RefundResponsePartial.cshtml" />
     <Content Include="Views\Shared\_RefundItemsFilesSmallPartial.cshtml" />
     <Content Include="Views\Shared\_RefundResponseScriptsPartial.cshtml" />
@@ -911,6 +919,15 @@
     <Content Include="Views\UserMailer\SendEventNotification.cshtml" />
     <Content Include="Views\UserMailer\SendMonthlyNotification.cshtml" />
     <Content Include="Views\UserMailer\SendVisitNotification.cshtml" />
+    <Content Include="Views\Shared\_CreateRefundItemPartial.cshtml" />
+    <Content Include="Views\Shared\_RefundItemCategoryPartialInverted.cshtml" />
+    <Content Include="Views\Shared\_RefundItemSubCategoryNamePartial.cshtml" />
+    <Content Include="Views\Shared\_RefundItemCommentsPartial.cshtml" />
+    <Content Include="Views\Shared\_RefundClosePartial.cshtml" />
+    <Content Include="Views\UserMailer\CloseMonthlyRefundNotification.cshtml" />
+    <Content Include="Views\UserMailer\CloseEventRefundNotification.cshtml" />
+    <Content Include="Views\UserMailer\CloseVisitRefundNotification.cshtml" />
+    <Content Include="Views\RefundVisualisation\Index.cshtml" />
     <None Include="Web.Backload.Default.config" />
     <None Include="Web.Backload.xsd">
       <SubType>Designer</SubType>
@@ -980,6 +997,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201406042010525_ReceivedInvoiceUpdate.resx">
       <DependentUpon>201406042010525_ReceivedInvoiceUpdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201408290134453_RefundItemsSubCategories.resx">
+      <DependentUpon>201408290134453_RefundItemsSubCategories.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201408290414068_RefundItemDates.resx">
+      <DependentUpon>201408290414068_RefundItemDates.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201409011942470_BiggerRefundItemActivityString.resx">
+      <DependentUpon>201409011942470_BiggerRefundItemActivityString.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201409012044201_RefundPaymentDate.resx">
+      <DependentUpon>201409012044201_RefundPaymentDate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

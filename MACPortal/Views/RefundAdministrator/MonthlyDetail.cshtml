@@ -9,6 +9,7 @@
     ViewBag.BackAction = "Monthlies";
     ViewBag.BackController = "RefundAdministrator";
     ViewBag.UseItemStatus = true;
+    ViewBag.AllowAttachments = Model.Response.AllowAttachments;
 }
 
 <div class="content-title clearfix">
@@ -40,10 +41,14 @@
         case RefundStatus.PAID:
             <p>Esta proposta foi paga com sucesso.</p>
             break;
+        case RefundStatus.TO_BE_PAID:
+            <p>Esta proposta será paga no dia @Model.Monthly.Refund.PaymentDate.ToString("dd/MM/yyyy")</p>
+            break;
     }
     
     <div>
-        <h3>Edite os Itens de Reembolso</h3>
+        @if (Model.Monthly.Refund.Status == RefundStatus.ACCEPTED)
+            { Html.RenderPartial("_RefundClosePartial", Model.Monthly.Refund);}
         @{ Html.RenderPartial("_RefundResponseAdminPartial", Model.Monthly.Refund.RefundItems); }
     </div>
 }

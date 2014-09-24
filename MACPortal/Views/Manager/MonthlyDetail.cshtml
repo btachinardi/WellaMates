@@ -8,6 +8,7 @@
     Layout = "~/Views/Shared/_LayoutMember.cshtml";
     ViewBag.BackAction = "Monthlies";
     ViewBag.BackController = "Manager";
+    ViewBag.AllowAttachments = Model.Response.AllowAttachments;
 }
 
 <div class="content-title clearfix">
@@ -38,6 +39,9 @@
             break;
         case RefundStatus.PAID:
             <p>Esta proposta foi paga com sucesso.</p>
+            break;
+        case RefundStatus.TO_BE_PAID:
+            <p>Esta proposta será paga no dia @Model.Monthly.Refund.PaymentDate.ToString("dd/MM/yyyy")</p>
             break;
     }
 }

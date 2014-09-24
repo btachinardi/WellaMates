@@ -1,9 +1,12 @@
-﻿@model MACPortal.ViewModel.CreateGenericVM
+﻿@using System.Globalization
+@using MACPortal.Controllers.Refunds
+@model MACPortal.ViewModel.CreateGenericVM
 
 <script type="text/javascript">
     $(function () {
 
     vm.Submit = function () {
+        console.log("Submitting Form!");
         var form = $('#refund-form').removeData("validator").removeData("unobtrusiveValidation");
         $.validator.unobtrusive.parse(form);
         if (!form.valid()) {
@@ -55,20 +58,44 @@
 
         if (deletingNum == 0) {
             window.location.href = '@Url.Action(Model.SuccessAction, Model.SuccessController)';
-        }
-    };
-
-    vm.addItem = function () {
-        var newItem = {
-            RefundItemID: ko.observable(--currentItemID),
-            RefundID: ko.observable(vm.RefundID),
-            Activity: ko.observable("Nova Atividade"),
-            Category: ko.observable(1),
-            OtherSpecification: ko.observable(""),
-            Value: ko.observable(0.0),
-            Files: ko.observableArray(),
-            Sent: ko.observable(false)
+            }
         };
+
+        vm.addItem = function() {
+            var newItem = {
+                RefundItemID: ko.observable(--currentItemID),
+                RefundID: ko.observable(vm.RefundID),
+                Activity: ko.observable(""),
+                Category: ko.observable(0),
+                SubCategory: ko.observable(0),
+                KM: ko.observable(0),
+                Date: ko.observable(""),
+                CategorySpecification: ko.observable(0),
+                OtherSpecification: ko.observable(""),
+                Value: ko.observable(0.0),
+                Files: ko.observableArray(),
+                Sent: ko.observable(false)
+            };
+            var beforeKMValue = -1;
+            var updateKmValue = function(newValue) {
+                if (newItem.Category() != 1 || newItem.SubCategory() != 1) {
+                    if (beforeKMValue != -1) {
+                        newItem.Value(beforeKMValue);
+                        beforeKMValue = -1;
+                    }
+                    return;
+                }
+                if (beforeKMValue == -1) {
+                    beforeKMValue = newItem.Value();
+                }
+                var rate = parseFloat('@Html.Raw(RefundConstants.KM_RATE.ToString(CultureInfo.InvariantCulture).Replace(',', '.'))');
+                newItem.Value(Math.round(newItem.KM() * rate * 100) / 100);
+        };
+
+        newItem.Category.subscribe(updateKmValue);
+        newItem.SubCategory.subscribe(updateKmValue);
+        newItem.KM.subscribe(updateKmValue);
+
         vm.Refund.RefundItems.push(newItem);
         processInputStyles();
         var form = $('#refund-form').removeData("validator").removeData("unobtrusiveValidation");
@@ -239,6 +266,17 @@
     };
 </script>
 
+<script>
+    $(window).resize(function () {
+        if ($(window).width() < 408) {
+            $('.btn-group-responsive').removeClass('btn-group btn-group-justified');
+            $('.btn-group-responsive').addClass('btn-group-vertical');
+        } else {
+            $('.btn-group-responsive').addClass('btn-group btn-group-justified');
+            $('.btn-group-responsive').removeClass('btn-group-vertical');
+        }
+    });
+</script>
 
 <script type="text/template" id="qq-template">
     <div class="qq-uploader-selector qq-uploader clearfix">

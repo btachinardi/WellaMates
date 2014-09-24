@@ -29,6 +29,9 @@ namespace MACPortal.ViewModel
                 {
                     Activity = r.Activity,
                     Category = r.Category,
+                    SubCategory = r.SubCategory,
+                    Date = r.Date,
+                    KM = r.KM,
                     Status = r.Status,
                     Value = r.Value,
                     RefundID = Original.RefundID,

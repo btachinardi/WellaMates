@@ -39,7 +39,7 @@ namespace WellaMates.Helpers
                 {
                     continue;
                 }
-                var refundProfile = ProcessRefundProfile();
+                var refundProfile = ProcessRefundProfile(new[] { "RefundAdministrator" });
                 if (refundProfile == null) continue;
 
                 var currentRefundAdmin = refundProfile.RefundAdministrator;
@@ -69,7 +69,7 @@ namespace WellaMates.Helpers
                 {
                     continue;
                 }
-                var refundProfile = ProcessRefundProfile();
+                var refundProfile = ProcessRefundProfile(new[] { "Freelancer" });
                 if (refundProfile == null) continue;
 
                 var currentFreelancer = refundProfile.Freelancer;
@@ -110,7 +110,7 @@ namespace WellaMates.Helpers
                 {
                     continue;
                 }
-                var refundProfile = ProcessRefundProfile();
+                var refundProfile = ProcessRefundProfile(new[] { "Manager" });
                 if (refundProfile == null) continue;
 
                 var currentManager = refundProfile.Manager;
@@ -132,9 +132,39 @@ namespace WellaMates.Helpers
             currentDb.SaveChanges();
         }
 
-        private RefundProfile ProcessRefundProfile()
+        public void ProcessVisualization()
         {
-            var userProfile = ProcessUserProfile();
+            if (!UpdateWorksheet("Visualizadores")) return;
+            for (rowNumber = 2; rowNumber <= currentWorksheet.Dimension.End.Row; rowNumber++)
+            {
+                if (currentWorksheet.Cells[rowNumber, 1].Value == null)
+                {
+                    continue;
+                }
+                var refundProfile = ProcessRefundProfile(new[] { "RefundVisualisation" });
+                if (refundProfile == null) continue;
+
+                var currentRefundAdmin = refundProfile.RefundAdministrator;
+                var isActive = IsActive();
+                if (isActive && currentRefundAdmin == null)
+                {
+                    currentRefundAdmin = new RefundAdministrator
+                    {
+                        UserID = refundProfile.UserID
+                    };
+                    currentDb.RefundAdministrators.Add(currentRefundAdmin);
+                }
+                else if (!isActive && currentRefundAdmin != null)
+                {
+                    currentDb.RefundAdministrators.Remove(currentRefundAdmin);
+                }
+            }
+            currentDb.SaveChanges();
+        }
+
+        private RefundProfile ProcessRefundProfile(string[] userRoles)
+        {
+            var userProfile = ProcessUserProfile(userRoles);
             if (userProfile == null) return null;
 
             var currentRefund = userProfile.RefundProfile;
@@ -148,7 +178,7 @@ namespace WellaMates.Helpers
             return currentRefund;
         }
 
-        private UserProfile ProcessUserProfile()
+        private UserProfile ProcessUserProfile(string[] userRoles)
         {
             var CPF = GetValue("CPF").Replace(".", String.Empty).Replace("-", String.Empty).Trim();
             var currentUser = currentDb.UserProfiles.FirstOrDefault(e => e.UserName == CPF);
@@ -156,16 +186,27 @@ namespace WellaMates.Helpers
             {
                 return currentUser;
             }
-
+            
             if (membership.GetUser(CPF, false) == null)
             {
                 membership.CreateUserAndAccount(CPF, CPF);
-                roles.AddUsersToRoles(new[] { CPF }, new[] { "Member" });
                 currentUser = currentDb.UserProfiles.First(e => e.UserName == CPF);
                 currentUser.PersonalInfo.CPF = CPF;
                 currentUser.PersonalInfo.Name = GetValue("NOME");
                 currentUser.ContactInfo.Email = GetValue("Email");
             }
+
+            var userRolesList = userRoles.ToList();
+            userRolesList.Add("Member");
+            foreach (var userRole in userRolesList.Where(userRole => roles.IsUserInRole(CPF, userRole)))
+            {
+                userRolesList.Remove(userRole);
+            }
+            if (userRolesList.Any())
+            {
+                roles.AddUsersToRoles(new[] { CPF }, userRoles);
+            }
+
             return currentUser;
         }
 

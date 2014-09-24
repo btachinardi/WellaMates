@@ -184,3 +184,23 @@ ko.bindingHandlers.label = {
         $(el).attr("for", contextName + "[" + modelID + "]");
     }
 };
+
+ko.bindingHandlers.visibleAnimated = {
+    init: function (el, valueAccessor, allBindingsAccessor, viewModel) {
+        var isVisible = valueAccessor();
+        if (isVisible) {
+            $(el).show();
+        } else {
+            $(el).hide();
+        }
+    },
+
+    update: function (el, valueAccessor, allBindingsAccessor, viewModel) {
+        var isVisible = valueAccessor();
+        if (isVisible) {
+            $(el).slideDown();
+        } else {
+            $(el).slideUp();
+        }
+    }
+};

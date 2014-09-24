@@ -7,6 +7,7 @@
     Layout = "~/Views/Shared/_LayoutMember.cshtml";
     ViewBag.BackAction = "Events";
     ViewBag.BackController = "Freelancer";
+    ViewBag.AllowAttachments = Model.Response.AllowAttachments;
 }
 
 <div class="content-title clearfix">
@@ -22,7 +23,7 @@
 {
     
     <div>
-        <h3 style="display: inline-block">Itens de Reembolso</h3>
+        <h3 style="display: inline-block">Reembolso</h3>
         <div class="col-xs-10 col-xs-push-1" style="margin-bottom: 20px">@{ Html.RenderPartial("_RefundDetailsPartial", Model.Event.Refund); }</div> <br/>
         @{ Html.RenderPartial("_RefundItemsPartial", Model.Event.Refund.RefundItems); }
     </div>
@@ -47,6 +48,9 @@
             break;
         case RefundStatus.PAID:
             <p>Sua proposta foi paga com sucesso!</p>
+            break;
+        case RefundStatus.TO_BE_PAID:
+            <p>Esta proposta será paga no dia @Model.Event.Refund.PaymentDate.ToString("dd/MM/yyyy")</p>
             break;
     }
 }

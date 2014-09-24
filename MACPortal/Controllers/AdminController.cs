@@ -145,6 +145,7 @@ namespace WellaMates.Controllers
                             helper.ProcessRefundAdministrator();
                             helper.ProcessManager();
                             helper.ProcessFreelancer();
+                            helper.ProcessVisualization();
                         }
                     }
                     catch (DbEntityValidationException e)

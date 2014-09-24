@@ -2,7 +2,10 @@
 @using WellaMates.Models
 @model ICollection<WellaMates.Models.RefundItem>
 
+
+<h3>Edite os Itens de Reembolso</h3>
 <form id="response-form">
+
     @using (Html.Bootstrap().Begin(new Table().Striped().Hover()))
     {
 
@@ -14,13 +17,10 @@
                 Categoria
             </th>
             <th class="hidden-xs">
-                Descrição
+                Data
             </th>
             <th>
                 Valor
-            </th>
-            <th>
-                Status
             </th>
         </tr>
         foreach (var item in Model.Where(i => i.Status == RefundItemStatus.ACCEPTED || i.Status == RefundItemStatus.PAID))
@@ -33,7 +33,7 @@
                     @{ Html.RenderPartial("_RefundItemCategoryPartial", item.Category); }
                 </td>
                 <td class="hidden-xs">
-                    @Html.DisplayFor(modelItem => item.Activity)
+                    @Html.Raw(item.Date.ToString("dd/MM/yyyy"))
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Value)
@@ -44,23 +44,17 @@
                 </td>
             </tr>
             <tr>
+                <td colspan="6" style="text-align: left">
+                    @{Html.RenderPartial("_RefundItemCommentsPartial", item.History);}
+                </td>
+            </tr>
+            <tr>
                 <td colspan="6">
-                    @if (item.Files != null && item.Files.Count > 0)
-                    {
-                        Html.RenderPartial("_RefundItemsFilesSmallPartial", AzureBlobSA.ProcessFiles(item.Files).ToList());
-                    }
-                    @foreach (var update in item.History)
-                    {
-                        if (update.Files != null && update.Files.Count > 0)
-                        {
-                            Html.RenderPartial("_RefundItemsFilesSmallPartial", AzureBlobSA.ProcessFiles(update.Files).ToList());
-                        }
-                    }
                     <p id="validation-error" style="display:none;color:#d30f44;margin: 30px;font-weight: 500;font-size: 24px;">Alguns dos campos do formulário estão inválidos:</p>
                     <div class="col-xs-12" data-bind="response: '@item.RefundItemID'">
                         
                         <!-- Status -->
-                        <div class="col-xs-12 form-group input-style">
+                        <div class="col-xs-12 col-md-6 form-group input-style">
                             <label data-bind="label: 'Status'" class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" >
                                 Status<span class="required">*</span>
                             </label>
@@ -76,8 +70,8 @@
                         </div>
                         
 
-                        <!-- Status -->
-                        <div class="col-xs-12 form-group input-style">
+                        <!-- Nota Fiscal Recebida -->
+                        <div class="col-xs-12 col-md-6 form-group input-style">
                             <label data-bind="label: 'ReceivedInvoice'" class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" >
                                 Nota Fiscal Recebida?<span class="required">*</span>
                             </label>
@@ -91,17 +85,29 @@
                         </div>
 
                         <!-- Anexos -->
-                        @if (ViewBag.AllowAttachments != null && ViewBag.AllowAttachments)
-                        {
-                            <div class="col-xs-12 form-group">
-                                <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="">
-                                    Anexos<span class="required" style="visibility: hidden;">*</span>
-                                </label>
+                        <div class="col-xs-12 form-group">
+                            <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="">
+                                Anexos<span class="required" style="visibility: hidden;">*</span>
+                            </label>
+                                
+                            @if (item.Files != null && item.Files.Count > 0)
+                            {
+                                Html.RenderPartial("_RefundItemsFilesSmallPartial", AzureBlobSA.ProcessFiles(item.Files).ToList());
+                            }
+                            @foreach (var update in item.History)
+                            {
+                                if (update.Files != null && update.Files.Count > 0)
+                                {
+                                    Html.RenderPartial("_RefundItemsFilesSmallPartial", AzureBlobSA.ProcessFiles(update.Files).ToList());
+                                }
+                            }
+                            @if (ViewBag.AllowAttachments != null && ViewBag.AllowAttachments)
+                            {
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div data-bind="fineuploader: '@item.RefundItemID'" class="fine-uploader clearfix"></div>                
-                                </div>                      
-                            </div>
-                        }
+                                </div>
+                            }                  
+                        </div>
                     </div>
                 </td>
             </tr>

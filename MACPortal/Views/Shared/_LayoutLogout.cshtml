@@ -8,8 +8,7 @@
     <img src="~/Content/images/background-woman.png" alt="Ilustração Login"/>
 </div>
 <div class="logout-content">
-    @RenderBody()
-    <div class="container">
+    <div class="container" style="margin-bottom: 15px">
         @using (var nav = Html.Bootstrap().Begin(new Nav().Style(NavType.Pills).SetLinksActiveByControllerAndAction().Class("logout-nav")))
         {
             @nav.ActionLink("Login", "Login", "Account")
@@ -17,6 +16,7 @@
             @nav.ActionLink("Fale Conosco", "Contact", "Account")
         }
     </div>
+    @RenderBody()
 </div>
 @RenderSection("PostContent", required:false)
 @section scripts { @RenderSection("scripts", required:false) }

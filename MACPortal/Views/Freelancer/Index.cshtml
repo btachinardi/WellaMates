@@ -5,36 +5,20 @@
     ViewBag.DisableBackBt = true;
 }
 
-<div class="clearfix container featured-container">
-    <div class="col-lg-4">
-        <img src="~/Content/images/empty.png" class="featured-image"/>      
-    </div>
-    <div class="col-lg-8 featured-content">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>        
-    </div>
-</div>
+
 
 <div class="clearfix container featured-container-secondary">
-    <div class="col-lg-4">
-        <img src="~/Content/images/empty.png" class="featured-image-sm"/>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore</p>  
+    <h1>O que gostaria de fazer?</h1>
+    <div class="col-md-4">
+        <h3>Visitas</h3>
+        @Html.Bootstrap().ActionLinkButton("Solicite Aqui o Reembolso referente à Visitas Realizadas", "CreateVisit").Size(ButtonSize.Large).ButtonBlock().Class("quick-bt")
     </div>
-    <div class="col-lg-4">
-        <img src="~/Content/images/empty.png" class="featured-image-sm"/>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore</p>  
+    <div class="col-md-4">
+        <h3>Eventos</h3>
+        @Html.Bootstrap().ActionLinkButton("Solicite Aqui o Reembolso referente à Eventos Realizados", "CreateEvent").Size(ButtonSize.Large).ButtonBlock().Class("quick-bt")
     </div>
-    <div class="col-lg-4">
-        <img src="~/Content/images/empty.png" class="featured-image-sm"/>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore</p>  
-    </div>
-</div>
-
-<div class="clearfix container featured-container-inverse">
-    <div class="col-lg-8 featured-content">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>        
-    </div>
-    <div class="col-lg-4">
-        <img src="~/Content/images/empty.png" class="featured-image"/>      
+    <div class="col-md-4">
+        <h3>Mensais</h3>
+        @Html.Bootstrap().ActionLinkButton("Envio de Nota Fiscal Mensal", "CreateMonthly").Size(ButtonSize.Large).ButtonBlock().Class("quick-bt")
     </div>
 </div>
-   

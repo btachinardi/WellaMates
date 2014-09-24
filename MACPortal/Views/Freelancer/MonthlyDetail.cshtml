@@ -45,6 +45,9 @@
         case RefundStatus.PAID:
             <p>Sua proposta foi paga com sucesso!</p>
             break;
+        case RefundStatus.TO_BE_PAID:
+            <p>Esta proposta será paga no dia @Model.Monthly.Refund.PaymentDate.ToString("dd/MM/yyyy")</p>
+            break;
     }
 }
 </div>

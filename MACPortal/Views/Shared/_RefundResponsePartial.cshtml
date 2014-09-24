@@ -5,57 +5,57 @@
 <form id="response-form">
     @using (Html.Bootstrap().Begin(new Table().Striped().Hover()))
     {
-
-        <tr>
-            <th class="hidden-xs hidden-sm">
-                #
-            </th>
-            <th>
-                Categoria
-            </th>
-            <th class="hidden-xs">
-                Descrição
-            </th>
-            <th>
-                Valor
-            </th>
-            <th>
-                Status
-            </th>
-        </tr>
-        foreach (var item in Model.Where(i => i.Status == 0 || i.Status == RefundItemStatus.APPEALED || i.Status == RefundItemStatus.REJECTED || i.Status == RefundItemStatus.SENT))
+        
+        foreach (var item in Model.Where(i => i.Status == 0 || i.Status == RefundItemStatus.APPEALED || i.Status == RefundItemStatus.REJECTED || i.Status == RefundItemStatus.SENT).Reverse())
         {
+            <tr>
+                <th class="hidden-xs hidden-sm">
+                    #
+                </th>
+                <th>
+                    Categoria
+                </th>
+                <th class="hidden-xs">
+                    Data
+                </th>
+                <th>
+                    Valor
+                </th>
+            </tr>
             <tr>
                 <td class="hidden-xs hidden-sm">
                     @Html.DisplayFor(modelItem => item.RefundItemID)
                 </td>
                 <td>
                     @{ Html.RenderPartial("_RefundItemCategoryPartial", item.Category); }
+                    @{
+                        if (item.Category == RefundItemCategory.TRANSPORTATION || item.Category == RefundItemCategory.MEAL)
+                        {
+                            <text><br />@{ Html.RenderPartial("_RefundItemSubCategoryNamePartial", item.SubCategory); }</text>
+                            
+                        }
+                    }
                 </td>
                 <td class="hidden-xs">
-                    @Html.DisplayFor(modelItem => item.Activity)
+                    @Html.Raw(item.Date.ToString("dd/MM/yyyy"))
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Value)
+                    @{
+                        if (item.SubCategory == RefundItemSubCategory.TRANSPORTATION_KM)
+                        {
+                            <text><br />(@item.KM KMs)</text>
+                        }
+                    }
                 </td>
-                <td>
-                    @{ Html.RenderPartial("_RefundItemStatusPartial", item.Status); } <br/>
-                    @{ Html.RenderPartial("_RefundItemStatusNamePartial", item.Status); }
+            </tr>
+            <tr>
+                <td colspan="6" style="text-align: left">
+                    @{Html.RenderPartial("_RefundItemCommentsPartial", item.History);}
                 </td>
             </tr>
             <tr>
                 <td colspan="6">
-                    @if (item.Files != null && item.Files.Count > 0)
-                    {
-                        Html.RenderPartial("_RefundItemsFilesSmallPartial", AzureBlobSA.ProcessFiles(item.Files).ToList());
-                    }
-                    @foreach (var update in item.History)
-                    {
-                        if (update.Files != null && update.Files.Count > 0)
-                        {
-                            Html.RenderPartial("_RefundItemsFilesSmallPartial", AzureBlobSA.ProcessFiles(update.Files).ToList());
-                        }
-                    }
                     <p id="validation-error" style="display:none;color:#d30f44;margin: 30px;font-weight: 500;font-size: 24px;">Alguns dos campos do formulário estão inválidos:</p>
                     <div class="col-xs-12" data-bind="response: '@item.RefundItemID'">
                         
@@ -96,17 +96,30 @@
                         </div>
 
                         <!-- Anexos -->
-                        @if (ViewBag.AllowAttachments != null && ViewBag.AllowAttachments)
-                        {
-                            <div class="col-xs-12 form-group">
-                                <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="">
-                                    Anexos<span class="required" style="visibility: hidden;">*</span>
-                                </label>
+                        <div class="col-xs-12 form-group">
+                            <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="">
+                                Anexos<span class="required" style="visibility: hidden;">*</span>
+                            </label>
+                                
+                            @if (item.Files != null && item.Files.Count > 0)
+                            {
+                                Html.RenderPartial("_RefundItemsFilesSmallPartial", AzureBlobSA.ProcessFiles(item.Files).ToList());
+                            }
+                            @foreach (var update in item.History)
+                            {
+                                if (update.Files != null && update.Files.Count > 0)
+                                {
+                                    Html.RenderPartial("_RefundItemsFilesSmallPartial", AzureBlobSA.ProcessFiles(update.Files).ToList());
+                                }
+                            }
+                            
+                            @if (ViewBag.AllowAttachments != null && ViewBag.AllowAttachments)
+                            {
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div data-bind="fineuploader: '@item.RefundItemID'" class="fine-uploader clearfix"></div>                
-                                </div>                      
-                            </div>
-                        }
+                                </div>
+                            }            
+                        </div>
                     </div>
                 </td>
             </tr>

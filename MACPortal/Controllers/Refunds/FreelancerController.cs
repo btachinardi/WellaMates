@@ -3,9 +3,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Mvc;
 using BootstrapMvcSample.Controllers;
 using HelloWorld.Code.DataAccess;
+using MACPortal.Controllers.Refunds;
 using MACPortal.Helpers;
 using MACPortal.ViewModel;
 using PagedList;
@@ -85,7 +87,8 @@ namespace WellaMates.Controllers
                     {
                         Refund = @event.Refund,
                         OwnerID = id,
-                        OwnerType = ResponseOwnerType.EVENT
+                        OwnerType = ResponseOwnerType.EVENT,
+                        AllowAttachments = true
                     }
                 },
                 MemberHelper.GetUserProfile(db))
@@ -104,7 +107,7 @@ namespace WellaMates.Controllers
                         Refund = monthly.Refund,
                         OwnerID = id,
                         OwnerType = ResponseOwnerType.MONTHLY,
-                        AllowAttachments = true,
+                        AllowAttachments = true
                     }
                 },
                 MemberHelper.GetUserProfile(db))
@@ -122,7 +125,8 @@ namespace WellaMates.Controllers
                     {
                         Refund = visit.Refund,
                         OwnerID = id,
-                        OwnerType = ResponseOwnerType.VISIT
+                        OwnerType = ResponseOwnerType.VISIT,
+                        AllowAttachments = true
                     }
                 },
                 MemberHelper.GetUserProfile(db))
@@ -150,7 +154,7 @@ namespace WellaMates.Controllers
 
             return View(MemberHelper.SetBaseMemberVM(
                 new FreelancerEventCreateVM(
-                    new CreateEventVM("Criar Evento", "CreateEvent")
+                    new CreateEventVM("Enviar", "CreateEvent")
                 ),
                 MemberHelper.GetUserProfile(db)));
         }
@@ -190,7 +194,7 @@ namespace WellaMates.Controllers
 
             return View(MemberHelper.SetBaseMemberVM(
                 new FreelancerMonthlyCreateVM(
-                    new CreateMonthlyVM("Criar Mensal", "CreateMonthly")
+                    new CreateMonthlyVM("Enviar", "CreateMonthly")
                 ),
                 MemberHelper.GetUserProfile(db)));
         }
@@ -229,7 +233,7 @@ namespace WellaMates.Controllers
 
             return View(MemberHelper.SetBaseMemberVM(
                 new FreelancerVisitCreateVM(
-                    new CreateVisitVM("Criar Visita", "CreateVisit")
+                    new CreateVisitVM("Enviar", "CreateVisit")
                 ),
                 MemberHelper.GetUserProfile(db)));
         }
@@ -249,9 +253,13 @@ namespace WellaMates.Controllers
                     ProcessRefundCreation(Visit.Refund, user);
                     db.Visits.Add(Visit);
                     db.SaveChanges();
-                    if (Visit.Refund.RefundItems.Count > 0)
+                    if (Visit.Refund.RefundItems != null && Visit.Refund.RefundItems.Count > 0)
                         SendVisitNotification(user, Visit);
                     return new HttpResponseMessage(HttpStatusCode.OK);
+                }
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    var errorMsg = error.ErrorMessage;
                 }
                 return new HttpResponseMessage(HttpStatusCode.InternalServerError);
             }
@@ -270,18 +278,19 @@ namespace WellaMates.Controllers
 
             if (MemberHelper.SendResponse(db, user.RefundProfile, response.Updates))
             {
-                ResponseNotification(user, response);
+                ResponseNotification(response, user.PersonalInfo.ArtisticName ?? user.PersonalInfo.Name, db, Server);
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
             return new HttpResponseMessage(HttpStatusCode.InternalServerError);
         }
 
-        private void ResponseNotification(UserProfile user, ResponseVM response)
+        public static void ResponseNotification(ResponseVM response, string responsible, PortalContext db, HttpServerUtilityBase server)
         {
             foreach (var update in response.Updates)
             {
                 update.RefundItem = db.RefundItems.First(r => r.RefundItemID == update.RefundItemID);
             }
+            var user = MemberHelper.GetRefundFreelancer(response.Refund, db);
             var mailer = new UserMailer();
             if (response.Updates.Length == 0 || response.Updates.All(u => u.Status == RefundItemStatus.REJECTED_NO_APPEAL)) return;
             foreach (var manager in user.RefundProfile.Freelancer.Managers)
@@ -292,10 +301,10 @@ namespace WellaMates.Controllers
                         mailer.EventResponseNotification(
                             manager.RefundProfile.User.ContactInfo.Email,
                             "Manager",
-                            user.PersonalInfo.ArtisticName ?? user.PersonalInfo.Name,
+                            responsible,
                             db.Events.Find(response.OwnerID),
                             response.Updates,
-                            Server.MapPath("~/Content/images/logo-wella.png")
+                            server.MapPath("~/Content/images/logo-wella.png")
                             ).Send();
                         break;
 
@@ -303,10 +312,10 @@ namespace WellaMates.Controllers
                         mailer.VisitResponseNotification(
                             manager.RefundProfile.User.ContactInfo.Email,
                             "Manager",
-                            user.PersonalInfo.ArtisticName ?? user.PersonalInfo.Name,
+                            responsible,
                             db.Visits.Find(response.OwnerID),
                             response.Updates,
-                            Server.MapPath("~/Content/images/logo-wella.png")
+                            server.MapPath("~/Content/images/logo-wella.png")
                             ).Send();
                         break;
 
@@ -314,10 +323,10 @@ namespace WellaMates.Controllers
                         mailer.MonthlyResponseNotification(
                             manager.RefundProfile.User.ContactInfo.Email,
                             "Manager",
-                            user.PersonalInfo.ArtisticName ?? user.PersonalInfo.Name,
+                            responsible,
                             db.Monthlies.Find(response.OwnerID),
                             response.Updates,
-                            Server.MapPath("~/Content/images/logo-wella.png")
+                            server.MapPath("~/Content/images/logo-wella.png")
                             ).Send();
                         break;
                 }
@@ -400,9 +409,16 @@ namespace WellaMates.Controllers
         private void ProcessRefundCreation(Refund refund, UserProfile user)
         {
             refund.Update();
+            if (refund.RefundItems == null)
+                return;
+
             foreach (var refundItem in refund.RefundItems)
             {
                 refundItem.Status = RefundItemStatus.SENT;
+                if (refundItem.SubCategory == RefundItemSubCategory.TRANSPORTATION_KM)
+                {
+                    refundItem.Value = RefundConstants.KM_RATE*refundItem.KM;
+                }
                 refundItem.History = new Collection<RefundItemUpdate>
                 {
                     new RefundItemUpdate
@@ -410,99 +426,11 @@ namespace WellaMates.Controllers
                         Date = DateTime.Now,
                         Status = RefundItemStatus.SENT,
                         RefundItem = refundItem,
-                        RefundProfileID = user.UserID
+                        RefundProfileID = user.UserID,
+                        Comment = refundItem.Activity
                     }
                 };
             }
         }
-
-
-        /**
-        [System.Web.Mvc.HttpPost]
-        public HttpResponseMessage CreateRefund(Refund refund)
-        {
-            var user = MemberHelper.GetUserProfile(db);
-            if (user.RefundProfile == null ||
-                user.RefundProfile.Freelancer == null)
-            {
-                return new HttpResponseMessage(HttpStatusCode.Forbidden);
-            }
-
-            if (MemberHelper.GenerateUpdates(db, refund, user.RefundProfile, null))
-            {
-                if (refund.Sent)
-                {
-                    SendNotification(user, refund);
-                }
-                return new HttpResponseMessage(HttpStatusCode.OK);
-            }
-            return new HttpResponseMessage(HttpStatusCode.InternalServerError);
-        }
-
-        public ActionResult EditRefund(int id)
-        {
-            var refund = db.Refunds.First(r => r.RefundID == id);
-            var user = MemberHelper.GetUserProfile(db);
-            if (user.RefundProfile == null ||
-                user.RefundProfile.Freelancer == null ||
-                user.UserID != refund.FreelancerID ||
-                refund.Status != RefundStatus.EDITING)
-            {
-                return HttpNotFound("Você não possui autorização para acessar este recurso.");
-            }
-            var isMonthly = refund.RefundItems.Any(ri => ri.Category == RefundItemCategory.SALARY);
-            return View(MemberHelper.SetBaseMemberVM(
-                new FreelancerEventCreateVM(
-                    isMonthly ? new EditRefundVM(refund, "Salvar Mudanças", "EditRefund", "Freelancer", "Monthly") : 
-                    new EditRefundVM(refund, "Salvar Mudanças", "EditRefund")
-                ),
-                MemberHelper.GetUserProfile(db)));
-        }
-
-        [System.Web.Mvc.HttpPost]
-        public HttpResponseMessage EditRefund(Refund refund)
-        {
-            var user = MemberHelper.GetUserProfile(db);
-            var oldRefund = db.Refunds.FirstOrDefault(r => r.RefundID == refund.RefundID);
-            if (user.RefundProfile == null ||
-                user.RefundProfile.Freelancer == null ||
-                oldRefund == null || oldRefund.Status != RefundStatus.EDITING ||
-                user.UserID != oldRefund.FreelancerID)
-            {
-                return new HttpResponseMessage(HttpStatusCode.Forbidden);
-            }
-
-            if (MemberHelper.GenerateUpdates(db, refund, user.RefundProfile, oldRefund))
-            {
-                if (refund.Sent)
-                {
-                    SendNotification(user, refund);
-                }
-                return new HttpResponseMessage(HttpStatusCode.OK);
-            }
-            return new HttpResponseMessage(HttpStatusCode.InternalServerError);
-        }
-
-        [System.Web.Mvc.HttpPost]
-        public HttpResponseMessage SendRefund(int id)
-        {
-            var user = MemberHelper.GetUserProfile(db);
-            var oldRefund = db.Refunds.FirstOrDefault(r => r.RefundID == id);
-            if (user.RefundProfile == null ||
-                user.RefundProfile.Freelancer == null ||
-                oldRefund == null || oldRefund.Status != RefundStatus.EDITING ||
-                user.UserID != oldRefund.FreelancerID)
-            {
-                return new HttpResponseMessage(HttpStatusCode.Forbidden);
-            }
-            
-            if (MemberHelper.SendRefund(db, user.RefundProfile, oldRefund))
-            {
-                SendNotification(user, oldRefund);
-                return new HttpResponseMessage(HttpStatusCode.OK);
-            }
-            return new HttpResponseMessage(HttpStatusCode.InternalServerError);
-        }
-         */
     }
 }

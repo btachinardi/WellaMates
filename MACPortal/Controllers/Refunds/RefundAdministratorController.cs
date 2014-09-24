@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -7,11 +8,14 @@ using System.Web;
 using System.Web.Mvc;
 using BootstrapMvcSample.Controllers;
 using HelloWorld.Code.DataAccess;
+using JetBrains.Annotations;
 using MACPortal.Helpers;
 using MACPortal.ViewModel;
 using PagedList;
+using WellaMates.Controllers;
 using WellaMates.DAL;
 using WellaMates.Filters;
+using WellaMates.Mailers;
 using WellaMates.Models;
 using WellaMates.ViewModel;
 
@@ -86,7 +90,8 @@ namespace MACPortal.Controllers
                     {
                         Refund = @event.Refund,
                         OwnerID = id,
-                        OwnerType = ResponseOwnerType.EVENT
+                        OwnerType = ResponseOwnerType.EVENT,
+                        AllowAttachments = true
                     }
                 },
                 MemberHelper.GetUserProfile(db))
@@ -104,7 +109,8 @@ namespace MACPortal.Controllers
                     {
                         Refund = monthly.Refund,
                         OwnerID = id,
-                        OwnerType = ResponseOwnerType.MONTHLY
+                        OwnerType = ResponseOwnerType.MONTHLY,
+                        AllowAttachments = true
                     }
                 },
                 MemberHelper.GetUserProfile(db))
@@ -122,7 +128,8 @@ namespace MACPortal.Controllers
                     {
                         Refund = visit.Refund,
                         OwnerID = id,
-                        OwnerType = ResponseOwnerType.VISIT
+                        OwnerType = ResponseOwnerType.VISIT,
+                        AllowAttachments = true
                     }
                 },
                 MemberHelper.GetUserProfile(db))
@@ -151,11 +158,58 @@ namespace MACPortal.Controllers
 
             if (MemberHelper.SendResponse(db, user.RefundProfile, response.Updates))
             {
+                var responsible = "[ADMIN] " + (user.PersonalInfo.ArtisticName ?? user.PersonalInfo.Name);
+                FreelancerController.ResponseNotification(response, responsible, db, Server);
+                ManagerController.ResponseNotification(response, responsible, db, Server);
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
             return new HttpResponseMessage(HttpStatusCode.InternalServerError);
         }
 
+        [System.Web.Mvc.HttpPost]
+        public ActionResult CloseRefund(int RefundID, DateTime PaymentDate)
+        {
+            var user = MemberHelper.GetUserProfile(db);
+            if (!CheckCreationAuth(user))
+                return RedirectToAction("AccessDenied", "Account");
+
+
+            var refund = db.Refunds.Find(RefundID);
+            if (refund != null)
+            {
+                refund.PaymentDate = PaymentDate;
+                refund.Update();
+                db.Refunds.Attach(refund);
+                db.Entry(refund).State = EntityState.Modified;
+                db.SaveChanges();
+                var freelancer = MemberHelper.GetRefundFreelancer(refund, db);
+                var responsible = "[ADMIN] " + (user.PersonalInfo.ArtisticName ?? user.PersonalInfo.Name);
+                NotifyRefundClosing(freelancer.RefundProfile.User.ContactInfo.Email, refund, responsible, "Freelancer");
+                foreach (var manager in freelancer.Managers)
+                {
+                    NotifyRefundClosing(manager.RefundProfile.User.ContactInfo.Email, refund, responsible, "Manager");
+                }
+                Success("Data de Pagamento Modificada com Sucesso!");
+            }
+            else
+            {
+                Error("Houve um problema ao alterar a data de pagamento. Tente Novamente mais Tarde.");
+            }
+
+            // ReSharper disable once PossibleNullReferenceException
+            return Redirect(this.Request.UrlReferrer.AbsolutePath);
+        }
+
+        private void NotifyRefundClosing(string email, Refund refund, string responsible, [AspMvcController]string controller)
+        {
+            new UserMailer().CloseRefundNotification(
+                    email,
+                    controller,
+                    responsible,
+                    MemberHelper.GetRefundOwner(refund, db),
+                    Server.MapPath("~/Content/images/logo-wella.png")
+                    ).Send();
+        }
 
 
         private IPagedList<T> GetPagedList<T>(string sortOrder, string currentFilter, string searchString, int? page) where T : class

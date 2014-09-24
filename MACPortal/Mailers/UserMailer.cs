@@ -171,5 +171,46 @@ namespace WellaMates.Mailers
             PopulateBody(message, "MonthlyResponseNotification", resources);
             return message;
         }
+
+        public MvcMailMessage CloseRefundNotification(string email, [AspMvcController]string controller, string sender, IRefundOwner refundOwner, string logoPath)
+        {
+            ViewBag.Controller = controller;
+            ViewBag.Sender = sender;
+            ViewBag.PaymentDay = refundOwner.Refund.PaymentDate.ToString("dd/MM/yyyy");
+            string viewName;
+            string subject;
+            if (refundOwner is Monthly)
+            {
+                ViewBag.Monthly = refundOwner;
+                viewName = "CloseMonthlyRefundNotification";
+                subject = string.Format("Resposta de {0} na requisição do mês de \"{1}\"", sender,
+                    ((Monthly) refundOwner).Month);
+            }
+            else if (refundOwner is Event)
+            {
+                ViewBag.Event = refundOwner;
+                viewName = "CloseEventRefundNotification";
+                subject = string.Format("Resposta de {0} na requisição do evento \"{1}\"", sender,
+                    ((Event) refundOwner).Name);
+            }
+            else
+            {
+                ViewBag.Visit = refundOwner;
+                viewName = "CloseVisitRefundNotification";
+                subject = string.Format("Resposta de {0} na requisição da visita de \"{1}\"", sender,
+                    ((Visit) refundOwner).Date.ToString("dd/MM/yyyy"));
+            }
+            var message = Populate(x =>
+            {
+                x.Subject = subject;
+                x.From = new MailAddress("equipe@wellaeducacao.com.br", "Equipe Wella Educação");
+                x.ViewName = viewName;
+                x.To.Add(email);
+            });
+            var resources = new Dictionary<string, string>();
+            resources["logo"] = logoPath;
+            PopulateBody(message, viewName, resources);
+            return message;
+        }
 	}
 }

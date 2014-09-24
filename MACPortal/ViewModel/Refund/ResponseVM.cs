@@ -32,6 +32,9 @@ namespace MACPortal.ViewModel
                     {
                         Activity = ri.Activity,
                         Category = ri.Category,
+                        SubCategory = ri.SubCategory,
+                        Date = ri.Date,
+                        KM = ri.KM,
                         Files = ri.Files,
                         ReceivedInvoice = ri.ReceivedInvoice,
                         RefundID = ri.RefundID,

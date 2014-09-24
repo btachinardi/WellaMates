@@ -65,6 +65,22 @@ namespace WellaMates.Migrations
             {
                 roles.CreateRole("Member");
             }
+            if (!roles.RoleExists("RefundVisualisation"))
+            {
+                roles.CreateRole("RefundVisualisation");
+            }
+            if (!roles.RoleExists("RefundAdministrator"))
+            {
+                roles.CreateRole("RefundAdministrator");
+            }
+            if (!roles.RoleExists("Manager"))
+            {
+                roles.CreateRole("Manager");
+            }
+            if (!roles.RoleExists("Freelancer"))
+            {
+                roles.CreateRole("Freelancer");
+            }
 
             if (membership.GetUser("admin", false) == null)
             {

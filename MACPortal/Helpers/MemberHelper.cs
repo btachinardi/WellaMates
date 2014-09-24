@@ -248,5 +248,31 @@ namespace MACPortal.Helpers
             db.SaveChanges();
             return true;
         }
+
+        public static Freelancer GetRefundFreelancer(Refund refund, PortalContext db)
+        {
+            var refundOwner = GetRefundOwner(refund, db);
+
+            return refundOwner == null ? null : refundOwner.Freelancer;
+        }
+
+        public static IRefundOwner GetRefundOwner(Refund refund, PortalContext db)
+        {
+            var refundId = refund.RefundID;
+
+            var visit = db.Visits.FirstOrDefault(v => v.RefundID == refundId);
+            if (visit != null)
+                return visit;
+
+            var evnt = db.Events.FirstOrDefault(e => e.RefundID == refundId);
+            if (evnt != null)
+                return evnt;
+
+            var monthly = db.Monthlies.FirstOrDefault(m => m.RefundID == refundId);
+            if (monthly != null)
+                return monthly;
+
+            return null;
+        }
     }
 }

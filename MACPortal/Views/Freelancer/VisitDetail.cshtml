@@ -7,6 +7,7 @@
     Layout = "~/Views/Shared/_LayoutMember.cshtml";
     ViewBag.BackAction = "Visits";
     ViewBag.BackController = "Freelancer";
+    ViewBag.AllowAttachments = Model.Response.AllowAttachments;
 }
 
 <div class="content-title clearfix">
@@ -25,11 +26,10 @@
         <div class="col-xs-10 col-xs-push-1" style="margin-bottom: 20px">@{ Html.RenderPartial("_RefundDetailsPartial", Model.Visit.Refund); }</div> <br/>
         @{ Html.RenderPartial("_RefundItemsPartial", Model.Visit.Refund.RefundItems); }
     </div>
-       
     switch (Model.Visit.Refund.Status)
     {
         case RefundStatus.WAITING_FOR_FREELANCER:
-            <h3 style="display: inline-block">Resposta do Reembolso</h3>
+            <h3 style="display: inline-block">Reembolso</h3>
         {
             Html.RenderPartial("_RefundResponsePartial", Model.Visit.Refund.RefundItems);
         }
@@ -45,6 +45,9 @@
             break;
         case RefundStatus.PAID:
             <p>Sua proposta foi paga com sucesso!</p>
+            break;
+        case RefundStatus.TO_BE_PAID:
+            <p>Esta proposta será paga no dia @Model.Visit.Refund.PaymentDate.ToString("dd/MM/yyyy")</p>
             break;
     }
 }
