@@ -1,0 +1,64 @@
+﻿@model WellaMates.ViewModel.AdministratorEventDetailVM
+@using WellaMates.Models
+
+@{
+    ViewBag.Title = "Detalhes do Evento (#" + Model.Event.EventID + ")";
+    ViewBag.ItemDetailUrl = @Url.Action("RefundItemDetail");
+    ViewBag.InvertStatusIcons = true;
+    ViewBag.NeutralStatusIcons = true;
+    Layout = "~/Views/Shared/_LayoutMember.cshtml";
+    ViewBag.BackAction = "Events";
+    ViewBag.BackController = "RefundAdministrator";
+    ViewBag.UseItemStatus = true;
+    ViewBag.AllowAttachments = Model.Response.AllowAttachments;
+}
+
+<div class="content-title clearfix">
+    <div class="fade-line-left"></div><h1><i>Detalhes <span class="hidden-xs">do Evento</span></i></h1><div class="fade-line-right"></div><br/>
+</div>
+<br/>
+<div class="col-xs-10 col-xs-push-1" style="margin-bottom: 20px;">
+    @{ Html.RenderPartial("_EventDetailsPartial", Model.Event); }
+</div>
+
+
+<div class="col-xs-12">
+@if (Model.Event.Refund.Status != RefundStatus.NON_EXISTENT)
+{   
+    <div>
+        <h3 style="display: inline-block">Itens de Reembolso</h3>
+        <div class="col-xs-10 col-xs-push-1" style="margin-bottom: 20px">@{ Html.RenderPartial("_RefundDetailsPartial", Model.Event.Refund); }</div> <br/>
+        @{ Html.RenderPartial("_RefundItemsPartial", Model.Event.Refund.RefundItems); }
+    </div>
+    
+    switch (Model.Event.Refund.Status)
+    {
+        case RefundStatus.WAITING_FOR_MANAGER:
+            <p>Esperando pela resposta do Gerente.</p>
+            break;
+        case RefundStatus.WAITING_FOR_FREELANCER:
+            <p>Esperando pela resposta do Freelancer.</p>
+            break;
+        case RefundStatus.ACCEPTED:
+            <p>Esta proposta de reembolso foi aprovada de acordo com as condições especificadas.</p>
+            break;
+        case RefundStatus.REJECTED:
+            <p>Esta proposta de reembolso foi reprovada por completo.</p>
+            break;
+        case RefundStatus.PAID:
+            <p>Esta proposta foi paga com sucesso.</p>
+            break;
+        case RefundStatus.TO_BE_PAID:
+            <p>Esta proposta será paga no dia @Model.Event.Refund.PaymentDate.ToString("dd/MM/yyyy")</p>
+            break;
+    }
+    
+    <div>
+        @{ Html.RenderPartial("_RefundClosePartial", Model.Event.Refund);}
+        @{ Html.RenderPartial("_RefundResponseAdminPartial", Model.Event.Refund.RefundItems); }
+    </div>
+}
+</div>
+@section scripts {
+    @{Html.RenderPartial("_RefundResponseScriptsPartial", Model.Response);}
+}

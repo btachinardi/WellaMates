@@ -1,0 +1,12 @@
+﻿@model WellaMates.ViewModel.GetReportVM
+
+<h3>Emitir Relatório</h3>
+
+@using (var regular = Html.Bootstrap().Begin(new Form("GetReport").Type(FormType.Inline).InputWidthLg(12).LabelWidthLg(12)))
+{    
+    Html.EnableClientValidation(false);
+    @regular.FormGroup().Class("input-style col-xs-6").TextBoxFor(model => model.StartDate).HtmlAttributes(new{@type = "date"}).Label().HtmlAttributes(new{@style = "text-align:center"})
+    @regular.FormGroup().Class("input-style col-xs-6").TextBoxFor(model => model.EndDate).HtmlAttributes(new{@type = "date"}).Label().HtmlAttributes(new{@style = "text-align:center"})
+    @Html.Bootstrap().SubmitButton().Class("col-xs-8 col-xs-offset-2").AppendIcon("glyphicon glyphicon-chevron-right").Text("Emitir").Size(ButtonSize.Large).HtmlAttributes(new{@style = "margin-top:30px; margin-bottom:30px;"})
+    Html.EnableClientValidation(true);
+}

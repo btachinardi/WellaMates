@@ -1,0 +1,24 @@
+﻿@model WellaMates.ViewModel.FreelancerHomeVM
+@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_LayoutMember.cshtml";
+    ViewBag.DisableBackBt = true;
+}
+
+
+
+<div class="clearfix container featured-container-secondary">
+    <h1>O que gostaria de fazer?</h1>
+    <div class="col-md-4">
+        <h3>Visitas</h3>
+        @Html.Bootstrap().ActionLinkButton("Solicite Aqui o Reembolso referente à Visitas Realizadas", "CreateVisit").Size(ButtonSize.Large).ButtonBlock().Class("quick-bt")
+    </div>
+    <div class="col-md-4">
+        <h3>Eventos</h3>
+        @Html.Bootstrap().ActionLinkButton("Solicite Aqui o Reembolso referente à Eventos Realizados", "CreateEvent").Size(ButtonSize.Large).ButtonBlock().Class("quick-bt")
+    </div>
+    <div class="col-md-4">
+        <h3>Mensais</h3>
+        @Html.Bootstrap().ActionLinkButton("Envio de Nota Fiscal Mensal", "CreateMonthly").Size(ButtonSize.Large).ButtonBlock().Class("quick-bt")
+    </div>
+</div>

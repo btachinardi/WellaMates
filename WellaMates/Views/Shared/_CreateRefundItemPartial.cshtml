@@ -1,0 +1,235 @@
+﻿@using WellaMates.Models
+<div data-bind="template: 'refundItemForm'"></div>
+<script id="refundItemForm" type="text/html">
+    <div class="col-xs-12 form-group">
+    <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="">
+        Inclua aqui seus itens para reembolso.<span class="required" style="visibility: hidden;">*</span>
+    </label>
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div data-bind="foreach: { data: Refund.RefundItems, afterAdd: afterAddItem, beforeRemove: beforeRemoveItem }">
+            <div data-bind="attr: { id: RefundItemID }" class="refund-item-form-wrapper clearfix col-xs-12">
+                <!-- REMOVE ITEM BUTTON -->
+                <a data-bind='click: $root.removeItem' class="btn-default btn-xs btn" style="margin-bottom: 5px; float: right;" >
+                    Cancelar
+                </a>
+
+                <h3 class="col-lg-9 col-md-8 col-sm-12 refund-item-header hidden" data-bind="text: Activity"></h3>
+                <div class="separator"></div>
+                <!-- REFUND ITEM ID -->
+                <input type="hidden" data-bind="value: RefundItemID" />
+
+                <!-- Categoria - VELHO
+                    <div class="col-lg-4 form-group input-style">
+                        <label data-bind="label: 'Category'" class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+                            Categoria<span class="required">*</span>
+                        </label>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <select data-bind="value: Category, input: 'Category'" class="form-control " data-val="true" data-val-required="O campo &#39;Categoria&#39; é obrigatório">
+                                <option value="1">Transporte</option>
+                                <option value="2">Alimenta&#231;&#227;o</option>
+                                <option value="3">Telefone/Comunica&#231;&#245;es</option>
+                                <option value="6">Xerox/Cópia</option>
+                                <option value="4">Outros</option>
+                            </select>
+                            <span data-bind="validation: 'Category'" class="field-validation-valid" data-valmsg-replace="true"></span>
+                        </div>
+                        <div data-bind="visible: Category() == 4">
+                            <label data-bind="label: 'OtherSpecification'" class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                Especificar
+                            </label>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input data-bind="value: OtherSpecification, input: 'OtherSpecification'" class="form-control" data-val="true" data-val-length="A Especificação não deve conter mais de 40 caracteres." data-val-length-max="40" type="text" value="" />
+                                <span data-bind="validation: 'OtherSpecification'" class="field-validation-valid" data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+                    </div>
+                    -->
+                <!-- Atividade - VELHO
+                    <div class="input-style col-lg-4 form-group">
+                        <label data-bind="label: 'Activity'" class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            Descrição<span class="required">*</span>
+                        </label>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <input data-bind="value: Activity, input: 'Activity'" class="form-control" data-val="true" data-val-length="A Descrição não deve conter mais de 40 caracteres." data-val-length-max="40" data-val-required="O campo &#39;Descrição&#39; é obrigatório" type="text" value="" />
+                            <span data-bind="validation: 'Activity'" class="field-validation-valid" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                    -->
+                <div class="">
+                    <h4>Qual foi o Gasto?</h4>
+                    <div class="btn-group btn-group-sm btn-group-justified btn-group-responsive" data-toggle="buttons">
+                        <label class="btn btn-default" data-bind="css: { active: Category() == 1 }, click: function (data) { data.Category(1); }">
+                            @{ Html.RenderPartial("_RefundItemCategoryPartialInverted", RefundItemCategory.TRANSPORTATION); }
+                            <br/>
+                            <input type="radio" name="Category" value="1">
+                            Transporte
+                        </label>
+
+                        <label class="btn btn-default" data-bind="css: { active: Category() == 2 }, click: function (data) { data.Category(2); }">
+                            @{ Html.RenderPartial("_RefundItemCategoryPartialInverted", RefundItemCategory.MEAL); }
+                            <br/>
+                            <input type="radio" name="Category" value="2">
+                            Alimenta&#231;&#227;o
+                        </label>
+
+                        <label class="btn btn-default" data-bind="css: { active: Category() == 6 }, click: function (data) { data.Category(6); }">
+                            @{ Html.RenderPartial("_RefundItemCategoryPartialInverted", RefundItemCategory.XEROX_COPY); }
+                            <br/>
+                            <input type="radio" name="Category" value="6">
+                            Xerox/<br/>Cópia
+                        </label>
+                            
+                        <label class="btn btn-default" data-bind="css: { active: Category() == 7 }, click: function (data) { data.Category(7); }">
+                            @{ Html.RenderPartial("_RefundItemCategoryPartialInverted", RefundItemCategory.MAIL_SEDEX); }
+                            <br/>
+                            <input type="radio" name="Category" value="7">
+                            Correio/<br/>Sedex
+                        </label>
+                            
+                        <label class="btn btn-default" data-bind="css: { active: Category() == 8 }, click: function (data) { data.Category(8); }">
+                            @{ Html.RenderPartial("_RefundItemCategoryPartialInverted", RefundItemCategory.LUGGAGE); }
+                            <br/>
+                            <input type="radio" name="Category" value="8">
+                            Excesso de<br/>Bagagem
+                        </label>
+                        <label class="btn btn-default" data-bind="css: { active: Category() == 4 }, click: function (data) { data.Category(4); }">
+                            @{ Html.RenderPartial("_RefundItemCategoryPartialInverted", RefundItemCategory.OTHER); }
+                            <br/>
+                            <input type="radio" name="Category" value="4" class="">
+                            Outros
+                        </label>
+                    </div>
+                            
+                    <!-- CATEGORY: TRANSPORTATION -->
+                    <div data-bind="visibleAnimated: Category() == 1">
+                        <div class="btn-group btn-group-sm btn-group-justified btn-group-responsive" data-toggle="buttons"
+                             style="height: 70px;margin-top: 1px;">
+                            <label class="btn btn-default" data-bind="css: { active: SubCategory() == 1 }, click: function (data) { data.SubCategory(1); }">
+                                <input type="radio" name="SubCategory" value="1" data-bind="checked: SubCategory() == 1">
+                                Reembolso<br/>de KM
+                            </label>
+                            <label class="btn btn-default" data-bind="css: { active: SubCategory() == 2 }, click: function (data) { data.SubCategory(2); }">
+                                <input type="radio" name="SubCategory" value="2" data-bind="checked: SubCategory() == 2">
+                                Passagem<br/>Rodoviária
+                            </label>
+                            <label class="btn btn-default" data-bind="css: { active: SubCategory() == 3 }, click: function (data) { data.SubCategory(3); }">
+                                <input type="radio" name="SubCategory" value="3"  data-bind="checked: SubCategory() == 3">
+                                Pedágio
+                            </label>
+                            <label class="btn btn-default" data-bind="css: { active: SubCategory() == 4 }, click: function (data) { data.SubCategory(4); }">
+                                <input type="radio" name="SubCategory" value="4"  data-bind="checked: SubCategory() == 4">
+                                Taxi
+                            </label>
+                        </div>
+                    </div>
+                        
+                    <!-- CATEGORY: MEAL -->
+                    <div data-bind="visibleAnimated: Category() == 2">
+                        <div class="btn-group btn-group-sm btn-group-justified btn-group-responsive" data-toggle="buttons"
+                             style="height: 70px;margin-top: 1px;">
+                            <label class="btn btn-default" data-bind="css: { active: SubCategory() == 11 }, click: function (data) { data.SubCategory(11); }">
+                                <input type="radio" name="SubCategory" value="11" data-bind="checked: SubCategory() == 11">
+                                Almoço
+                            </label>
+                            <label class="btn btn-default" data-bind="css: { active: SubCategory() == 12 }, click: function (data) { data.SubCategory(12); }">
+                                <input type="radio" name="SubCategory" value="12" data-bind="checked: SubCategory() == 12">
+                                Jantar
+                            </label>
+                        </div>
+                    </div>
+                        
+                    <!-- LUNCH WARNING -->
+                    <div data-bind="visibleAnimated: Category() == 2 && SubCategory() == 11">
+                        <h4>Lembre-se que você já recebe o auxílio refeição (R$ 128,00) e deve incluir somente as despesas de almoços quando estiver em eventos.</h4>
+                    </div>
+                    <!-- CATEGORY: OTHER SPECIFICATION -->
+                    <!--
+                        <div class="" data-bind="visibleAnimated: Category() == 4">
+                            <label data-bind="label: 'OtherSpecification'" class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                
+                            </label>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input data-bind="value: OtherSpecification, input: 'OtherSpecification'" class="form-control" data-val="true" data-val-length="A Especificação não deve conter mais de 40 caracteres." data-val-length-max="40" type="text" value="" />
+                                <span data-bind="validation: 'OtherSpecification'" class="field-validation-valid" data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+                        -->
+                    </div>
+                    
+                    <!-- DATE -->
+                    <div class=" input-style col-lg-4 form-group" data-bind="visibleAnimated: !(Category() == 0 || (Category() == 1 && (SubCategory() < 1 || SubCategory() > 4)) || (Category() == 2 && (SubCategory() < 11 || SubCategory() > 12)))">                        <!-- INPUT NAME -->
+                        <label data-bind="label: 'Date'" class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                             Data<span class="required">*</span>
+                         </label>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">                                     <!-- VALIDATION MSG -->                         <!-- VALIDATION MSG -->                <!--   INPUT NAMES   -->
+                            <input data-bind="value: Date, input: 'Date'" class="form-control" data-val="true" data-val-date="Formato da data invalido." data-val-required="O campo &#39;Data&#39; é obrigatório" id="Date" name="Date" type="date" value="01/01/0001 00:00:00" />
+                            <span class="field-validation-valid" data-valmsg-for="Date" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- KM -->
+                    <div class="input-style col-lg-4 form-group" data-bind="visibleAnimated: Category() == 1 && SubCategory() == 1">
+                        <label data-bind="label: 'KM'" class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            Quilômetros
+                        </label>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">KM</span>
+                                <input data-bind="value: KM, input: 'KM'" class="form-control" data-val="true" data-val-number="O campo 'Quilômetros' deve ser um número." type="text" value="0" />
+                            </div>
+                            <span data-bind="validation: 'KM'" class="field-validation-valid" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <!-- Valor -->
+                    <div class="input-style col-lg-4 form-group" data-bind="visibleAnimated: !(Category() == 0 || (Category() == 1 && (SubCategory() < 1 || SubCategory() > 4)) || (Category() == 2 && (SubCategory() < 11 || SubCategory() > 12)))">
+                        <label data-bind="label: 'Value'" class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            Valor<span class="required">*</span>
+                        </label>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">R$</span>
+                                <input data-bind="value: Value, input: 'Value', enable: SubCategory() != 1" class="form-control" data-val="true" data-val-number="O campo 'Valor' deve ser um número." data-val-required="O campo &#39;Valor&#39; é obrigatório" type="text" value="0" />
+                            </div>
+                            <span data-bind="validation: 'Value'" class="field-validation-valid" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Comentários -->
+                    <div class="input-style col-lg-12 form-group" data-bind="visibleAnimated: !(Category() == 0 || (Category() == 1 && (SubCategory() < 1 || SubCategory() > 4)) || (Category() == 2 && (SubCategory() < 11 || SubCategory() > 12)))">
+                        <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="Activity">
+                            Comentários<span class="required">*</span>
+                        </label>
+                        <div data-bind="visibleAnimated: Category() == 8">
+                            <h4>Informar o Destino de Viagem e o motivo do excesso:</h4>
+                        </div>
+                        <div data-bind="visibleAnimated: Category() == 4">
+                            <h4>Informar o Tipo de Gasto:</h4>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">                                             <!-- VALIDATION MSG -->                  <!--   INPUT NAMES   -->
+                            <textarea data-bind="value: Activity, input: 'Activity'" class="form-control" data-val="true" data-val-required="O campo &#39;Comentários&#39; é obrigatório" id="Activity" name="Activity" rows="2">
+                            </textarea>
+                            <span class="field-validation-valid" data-valmsg-for="Activity" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <!-- Anexos -->
+                    <div class="col-xs-12 form-group" data-bind="visibleAnimated: !(Category() == 0 || (Category() == 1 && (SubCategory() < 2 || SubCategory() > 4)) || (Category() == 2 && (SubCategory() < 11 || SubCategory() > 12)))">
+                        <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="">
+                            Anexos<span class="required" style="visibility: hidden;">*</span>
+                        </label>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div data-bind="fineuploader: RefundItemID " class="fine-uploader clearfix"></div>                
+                        </div>                      
+                    </div>
+                </div>
+            </div>
+            <!-- ADD ITEM BUTTON -->
+            <div class="refund-item-form-wrapper clearfix  col-xs-12" style="display: table">
+                <a data-bind='click: $root.addItem' class="btn-special" style="margin-bottom: 5px; height: 100px" >
+                    Clique aqui para incluir um novo gasto para reembolso
+                </a>
+            </div>
+        </div>
+    </div>
+</script>

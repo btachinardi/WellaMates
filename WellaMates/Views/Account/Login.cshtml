@@ -1,0 +1,30 @@
+﻿@model WellaMates.Models.LoginModel
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_LayoutLogout.cshtml";
+}
+
+<div class="logout-content-small clearfix">
+    
+    <!--
+        <div class="login-title image-glow hidden-md">
+            Bem-Vindo ao<br/>
+            <div class="fade-line-left"></div><i>Wella</i><div class="fade-line-right"></div><br/>
+            <b>Educação</b>
+        </div>
+    -->
+
+    <section id="loginForm">
+        @using (var f = Html.Bootstrap().Begin(new Form().Type(FormType.Horizontal)))
+        {
+            @f.FormGroup().Class("input-style").TextBoxFor(m => m.UserName).ShowValidationMessage(false).Placeholder("Insira seu CPF");
+            @f.FormGroup().Class("input-style").PasswordFor(m => m.Password).ShowValidationMessage(false).Placeholder("Primeiro acesso? Insira seu CPF");
+            @f.FormGroup().CheckBoxFor(m => m.RememberMe).ShowValidationMessage(false).Label().Class("remember-me hidden-xs");
+            @Html.Bootstrap().SubmitButton().AppendIcon("glyphicon glyphicon-chevron-right").Text("Entrar").Class("login-bt")
+        }
+    </section>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

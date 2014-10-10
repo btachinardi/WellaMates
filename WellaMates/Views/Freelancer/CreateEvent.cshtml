@@ -1,0 +1,21 @@
+﻿@model WellaMates.ViewModel.FreelancerEventCreateVM
+@using WellaMates.ViewModel
+
+@{
+    ViewBag.Title = "Novo Evento";
+    Layout = "~/Views/Shared/_LayoutMember.cshtml";
+}
+
+<div class="content-title clearfix">
+    <h2><i>Solicite Aqui o Reembolso referente à Eventos Realizados</i></h2>
+    <br />
+</div>
+
+@{
+    Html.RenderPartial("_CreateEventPartial", Model.CreateEvent);
+}
+
+@section scripts
+{
+    @{ Html.RenderPartial("_CreateEventScriptsPartial", Model.CreateEvent); }
+}

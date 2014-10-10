@@ -1,0 +1,16 @@
+﻿@using WellaMates.Models
+@model WellaMates.Models.RefundItem
+
+
+@{ Html.RenderPartial("_RefundItemCategoryPartial", Model.Category); }
+@{
+    if (Model.Category == RefundItemCategory.TRANSPORTATION || Model.Category == RefundItemCategory.MEAL)
+    {
+        <text><br />@{ Html.RenderPartial("_RefundItemSubCategoryNamePartial", Model.SubCategory); }</text>
+
+    }
+    else
+    {
+        <text><br />@{ Html.RenderPartial("_RefundItemCategoryNamePartial", Model.Category); }</text>
+    }
+}

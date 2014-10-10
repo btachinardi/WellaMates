@@ -1,0 +1,46 @@
+﻿@model WellaMates.ViewModel.UserVM
+
+@{
+    ViewBag.Title = "Bem Vindo";
+    Layout = "~/Views/Shared/_LayoutAllUsers.cshtml";
+    ViewBag.DisableBackBt = true;
+}
+
+<div class="login-title image-glow hidden-xs">
+    Bem-Vindo<br/>
+    <i><span class="text-name">@Model.Name</span></i>
+    <br/>
+</div>
+
+@using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) {
+    @Html.AntiForgeryToken()
+    <a href="javascript:document.getElementById('logoutForm').submit()">Entrar com outra conta</a>
+}
+<br />
+@Html.Bootstrap().Button().HtmlAttributes(new { @onclick = "ShowForm()" }).Id("pre-register-bt").Text("Faça <span style=\"display:inline!important\" class=\"hidden-xs\">aqui o </span>seu pré-cadastro!").Size(ButtonSize.Large).ButtonBlock()
+<br/>
+
+@section PostContent {
+    <div id="pre-register-form" style="display: none">
+        @{ Html.RenderPartial("_EditUserPartial", Model); }
+        <br/>
+    </div>
+}
+
+
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        function ShowForm() {
+            $("#pre-register-bt").slideUp();
+            $("#pre-register-form").slideDown();
+            $("#cpf-input").val(FormatCPF($("#cpf-input").val()));
+        }
+        
+        function FormatCPF(cpf) {
+            return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9, 11);
+        }
+    </script>
+}

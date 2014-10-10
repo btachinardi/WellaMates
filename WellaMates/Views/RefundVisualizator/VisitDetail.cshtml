@@ -1,0 +1,59 @@
+﻿@model WellaMates.ViewModel.AdministratorVisitDetailVM
+@using WellaMates.Models
+
+@{
+    ViewBag.Title = "Detalhes da Visita (#" + Model.Visit.VisitID + ")";
+    ViewBag.InvertStatusIcons = true;
+    ViewBag.ItemDetailUrl = @Url.Action("RefundItemDetail");
+    Layout = "~/Views/Shared/_LayoutMember.cshtml";
+    ViewBag.BackAction = "Visits";
+    ViewBag.BackController = "RefundVisualizator";
+    ViewBag.UseItemStatus = true;
+    ViewBag.AllowAttachments = Model.Response.AllowAttachments;
+    ViewBag.NeutralStatusIcons = true;
+}
+
+<div class="content-title clearfix">
+    <div class="fade-line-left"></div><h1><i>Detalhes <span class="hidden-xs">da Visita</span></i></h1><div class="fade-line-right"></div><br/>
+</div>
+<br/>
+<div class="col-xs-10 col-xs-push-1" style="margin-bottom: 20px;">
+    @{ Html.RenderPartial("_VisitDetailsPartial", Model.Visit); }
+</div>
+
+
+<div class="col-xs-12">
+@if (Model.Visit.Refund.Status != RefundStatus.NON_EXISTENT)
+{
+    <div>
+        <h3 style="display: inline-block">Itens de Reembolso</h3>
+        <div class="col-xs-10 col-xs-push-1" style="margin-bottom: 20px">@{ Html.RenderPartial("_RefundDetailsPartial", Model.Visit.Refund); }</div> <br/>
+        @{ Html.RenderPartial("_RefundItemsPartial", Model.Visit.Refund.RefundItems); }
+    </div>
+    
+    switch (Model.Visit.Refund.Status)
+    {
+        case RefundStatus.WAITING_FOR_MANAGER:
+            <p>Esperando pela resposta do Gerente.</p>
+            break;
+        case RefundStatus.WAITING_FOR_FREELANCER:
+            <p>Esperando pela resposta do Freelancer.</p>
+            break;
+        case RefundStatus.ACCEPTED:
+            <p>Esta proposta de reembolso foi aprovada de acordo com as condições especificadas.</p>
+            break;
+        case RefundStatus.REJECTED:
+            <p>Esta proposta de reembolso foi reprovada por completo.</p>
+            break;
+        case RefundStatus.PAID:
+            <p>Esta proposta foi paga com sucesso.</p>
+            break;
+        case RefundStatus.TO_BE_PAID:
+            <p>Esta proposta será paga no dia @Model.Visit.Refund.PaymentDate.ToString("dd/MM/yyyy")</p>
+            break;
+    }
+}
+</div>
+@section scripts {
+    @{Html.RenderPartial("_RefundResponseScriptsPartial", Model.Response);}
+}

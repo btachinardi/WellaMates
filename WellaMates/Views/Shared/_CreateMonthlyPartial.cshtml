@@ -1,0 +1,88 @@
+﻿@using Microsoft.Web.Mvc.Controls
+@model WellaMates.ViewModel.CreateMonthlyVM
+
+<div class="container" style="padding-bottom: 20px; padding-top: 20px;">
+    <p id="validation-error" style="display:none;color:#d30f44;margin: 30px;font-weight: 500;font-size: 24px;">Alguns dos campos do formulário estão inválidos:</p>
+    <form class="border-fix form-horizontal" id="refund-form">
+
+                                       <!-- TARGET ID -->
+    <input type="hidden" data-bind="value: MonthlyID" />
+        
+    <!-- REFUND -->
+    <!-- REFUND ITEM ID -->
+    <input type="hidden" data-bind="value: Refund.RefundItems()[0].RefundItemID" />
+
+    <!-- Categoria -->
+    <input type="hidden" data-bind="value: Refund.RefundItems()[0].Category" />
+
+    <!-- Atividade -->
+    <input type="hidden" data-bind="value: Refund.RefundItems()[0].Activity" />
+        
+    <!-- Ano -->
+    <div class=" input-style col-lg-4 form-group">
+        <label data-bind="label: 'Year'" class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            Ano<span class="required">*</span>
+        </label>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <input data-bind="value: Year, input: 'Year'" class="form-control" data-val="true" data-val-number="O campo 'Ano' deve ser um número." data-val-required="O campo &#39;Ano&#39; é obrigatório" type="number" />
+            <span data-bind="validation: 'Year'" class="field-validation-valid" data-valmsg-replace="true"></span>
+        </div>
+    </div>    
+    
+    <!-- Mês -->
+    <div class="col-lg-4 form-group input-style">
+        <label data-bind="label: 'Month'" class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+            Mês<span class="required">*</span>
+        </label>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <select data-bind="value: Month, input: 'Month'" class="form-control " data-val="true" data-val-required="O campo &#39;Mês&#39; é obrigatório">
+                <option value="1">Janeiro</option>
+                <option value="2">Fevereiro</option>
+                <option value="3">Março</option>
+                <option value="4">Abril</option>
+                <option value="5">Maio</option>
+                <option value="6">Junho</option>
+                <option value="7">Julho</option>
+                <option value="8">Agosto</option>
+                <option value="9">Setembro</option>
+                <option value="10">Outubro</option>
+                <option value="11">Novembro</option>
+                <option value="12">Dezembro</option>
+            </select>
+            <span data-bind="validation: 'Month'" class="field-validation-valid" data-valmsg-replace="true"></span>
+        </div>
+    </div>
+
+    <!-- Valor -->
+    <div class=" input-style col-lg-4 form-group">
+        <label data-bind="label: 'Value'" class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            Valor<span class="required">*</span>
+        </label>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="input-group">
+                <span class="input-group-addon">R$</span>
+                <input data-bind="value: Refund.RefundItems()[0].Value, input: 'Value'" class="form-control" data-val="true" data-val-number="O campo 'Valor' deve ser um número." data-val-required="O campo &#39;Valor&#39; é obrigatório" type="number" value="0" />
+            </div>
+            <span data-bind="validation: 'Value'" class="field-validation-valid" data-valmsg-replace="true"></span>
+        </div>
+    </div>
+            
+            
+    <div class="separator"></div>
+
+    <!-- Anexos -->
+        <!-- ko with: Refund.RefundItems()[0] -->
+        <div class="col-xs-12 form-group">
+            <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="">
+                Anexe sua Nota Fiscal de Prestação de Serviço<span class="required" style="visibility: hidden;">*</span>
+            </label>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div data-bind="fineuploader: RefundItemID " class="fine-uploader clearfix"></div>                
+            </div>                      
+        </div>
+        <!-- /ko -->
+
+    
+    @{ Html.RenderPartial("_CreateButtonPartial", Model.SubmitText);}
+</form>
+</div>

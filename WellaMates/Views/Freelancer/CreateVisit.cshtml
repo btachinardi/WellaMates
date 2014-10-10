@@ -1,0 +1,21 @@
+﻿@model WellaMates.ViewModel.FreelancerVisitCreateVM
+@using WellaMates.ViewModel
+
+@{
+    ViewBag.Title = "Nova Visita";
+    Layout = "~/Views/Shared/_LayoutMember.cshtml";
+}
+
+<div class="content-title clearfix">
+    <h2><i>Solicite Aqui o Reembolso referente à Visitas Realizadas</i></h2>
+    <br />
+</div>
+
+@{
+    Html.RenderPartial("_CreateVisitPartial", Model.CreateVisit);
+}
+
+@section scripts
+{
+    @{ Html.RenderPartial("_CreateVisitScriptsPartial", Model.CreateVisit); }
+}

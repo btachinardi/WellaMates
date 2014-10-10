@@ -1,0 +1,12 @@
+﻿@model WellaMates.ViewModel.AdministratorHomeVM
+@{
+    ViewBag.Title = "Home Administrador";
+    Layout = "~/Views/Shared/_LayoutMember.cshtml";
+    ViewBag.DisableBackBt = true;
+}
+
+
+
+<div class="clearfix container featured-container">
+    @{Html.RenderPartial("_ReportPartial", Model.GetReport);}
+</div>

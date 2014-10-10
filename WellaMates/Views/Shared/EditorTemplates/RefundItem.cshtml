@@ -1,0 +1,18 @@
+﻿@model WellaMates.Models.RefundItem
+
+@{
+    var f = Html.Bootstrap().Misc().GetFormBuilderFromViewData();
+}
+<div class="separator"></div>
+<div class="refund-item-form-wrapper clearfix">
+    @Html.HiddenFor(m => m.RefundItemID)
+    
+    @f.FormGroup().Class("input-style col-lg-4").TextBoxFor(m => m.Activity).WidthXs(12)
+    @f.FormGroup().Class("col-lg-4").DropDownListFromEnumFor(m => m.Category)
+    @f.FormGroup().Class("input-style col-lg-4").TextBoxFor(m => m.Value).Prepend("R$").WidthXs(12)
+    @f.FormGroup().Class("col-lg-12").EditorFor(m => m.Files)
+    
+    <div class="file-form-wrapper clearfix col-lg-6">
+        @Html.Bootstrap().Button().Text("Adicionar Anexo").HtmlAttributes(new {data=""})
+    </div>
+</div>

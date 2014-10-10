@@ -1,0 +1,117 @@
+﻿@using WellaMates.Helpers
+@using WellaMates.Models
+@model ICollection<WellaMates.Models.RefundItem>
+
+<form id="response-form">
+    @using (Html.Bootstrap().Begin(new Table().Striped().Hover()))
+    {
+        
+        foreach (var item in Model.Where(i => i.Status == 0 || i.Status == RefundItemStatus.APPEALED || i.Status == RefundItemStatus.REJECTED || i.Status == RefundItemStatus.SENT).Reverse())
+        {
+            <tr>
+                <th class="hidden-xs hidden-sm">
+                    #
+                </th>
+                <th>
+                    Categoria
+                </th>
+                <th class="hidden-xs">
+                    Data
+                </th>
+                <th>
+                    Valor
+                </th>
+            </tr>
+            <tr>
+                <td class="hidden-xs hidden-sm">
+                    @Html.DisplayFor(modelItem => item.RefundItemID)
+                </td>
+                <td>
+                    @{ Html.RenderPartial("_RefundItemCategoryDetailedPartial", item); }
+                </td>
+                <td class="hidden-xs">
+                    @Html.Raw(item.Date.ToString("dd/MM/yyyy"))
+                </td>
+                <td>
+                    @{ Html.RenderPartial("_RefundItemValuePartial", item); }
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6" style="text-align: left">
+                    @{Html.RenderPartial("_RefundItemCommentsPartial", item.History);}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6">
+                    <p id="validation-error" style="display:none;color:#d30f44;margin: 30px;font-weight: 500;font-size: 24px;">Alguns dos campos do formulário estão inválidos:</p>
+                    <div class="col-xs-12" data-bind="response: '@item.RefundItemID'">
+                        
+                        <!-- Status -->
+                        <div class="col-xs-12 form-group input-style">
+                            <label data-bind="label: 'Status'" class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+                                Veredicto<span class="required">*</span>
+                            </label>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <select data-bind="value: Status, input: 'Status'" class="form-control " data-val="true" data-val-required="O campo &#39;Veredicto&#39; é obrigatório">
+                                    
+                                    @if (ViewBag.InvertStatusIcons == null || ViewBag.InvertStatusIcons == false)
+                                    {
+                                        <option value="5">Enviar Justificativa</option>
+                                        <option value="6">Aceitar Rejeição</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="3">Aprovado</option>
+                                        <option value="4">Necessário Esclarecimentos</option>
+                                        <option value="6">Rejeitado</option>
+                                    }
+                                </select>
+                                <span data-bind="validation: 'Status'" class="field-validation-valid" data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+                        
+
+                        <!-- Comentarios -->
+                        <div class=" col-xs-12 form-group">
+                            <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="Comment">
+                                Comentários<span class="required">*</span>
+                            </label>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <textarea data-bind="value: Comment" class="form-control" data-val="true" id="Comment" name="Comment" rows="2">
+                                    </textarea>
+                            </div>
+                        </div>
+
+                        <!-- Anexos -->
+                        <div class="col-xs-12 form-group">
+                            <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="">
+                                Anexos<span class="required" style="visibility: hidden;">*</span>
+                            </label>
+                                
+                            @if (item.Files != null && item.Files.Count > 0)
+                            {
+                                Html.RenderPartial("_RefundItemsFilesSmallPartial", AzureBlobSA.ProcessFiles(item.Files).ToList());
+                            }
+                            @foreach (var update in item.History)
+                            {
+                                if (update.Files != null && update.Files.Count > 0)
+                                {
+                                    Html.RenderPartial("_RefundItemsFilesSmallPartial", AzureBlobSA.ProcessFiles(update.Files).ToList());
+                                }
+                            }
+                            
+                            @if (ViewBag.AllowAttachments != null && ViewBag.AllowAttachments)
+                            {
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div data-bind="fineuploader: '@item.RefundItemID'" class="fine-uploader clearfix"></div>                
+                                </div>
+                            }            
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    }
+    <button id="send-button" data-bind="click: SendForm" class="btn-default btn" data-loading-text="Enviando" style="width: 150px;margin-right: 30px;margin-top: 50px;">Enviar</button>
+    <p id="send-text" style="display: none">Enviando...</p>
+</form>

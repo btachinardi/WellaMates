@@ -1,0 +1,323 @@
+﻿@using System.Globalization
+@using WellaMates.Controllers.Refunds
+@model WellaMates.ViewModel.CreateGenericVM
+
+<script type="text/javascript">
+    $(function () {
+
+    vm.Submit = function () {
+        console.log("Submitting Form!");
+        var form = $('#refund-form').removeData("validator").removeData("unobtrusiveValidation");
+        $.validator.unobtrusive.parse(form);
+        if (!form.valid()) {
+            console.log("INVALID FORM");
+            $("#validation-error").slideDown();
+            $("#validation-error").anchorAnimate();
+            return;
+        }
+
+        var json = ko.toJSON(vm);
+        $.ajax({
+            url: '@Url.Action(Model.SubmitAction, Model.SubmitController)',
+            type: 'POST',
+            dataType: 'json',
+            data: json, 
+            contentType: 'application/json',
+            success: function (result) {
+                finishSuccess();
+            },
+            error: function(err) {
+                if (err.responseText == "success" || err.responseText.indexOf("StatusCode: 200") != -1) {
+                    finishSuccess();
+                } else {
+                    console.log("Ajax request received an error: " + err.responseText + ", " + err);
+                }
+            },
+            complete: function () {
+                console.log("Completed");
+            }
+        });
+
+        $("#send-button").hide();
+        $("#send-text").fadeIn();
+    };
+
+    var finishSuccess = function () {
+        console.log("Success!");
+        deletingNum = 0;
+        for (var i = 0; i < deletedFines.length; i++) {
+            var t = $("#" + deletedFines[i].RefundItemID() + ".fine-uploader");
+            var uploaded = t.fineUploader("getUploads", {
+                status: qq.status.UPLOAD_SUCCESSFUL
+            });
+            for (var u = 0; u < uploaded.length; u++) {
+                deletingNum++;
+                $(t).fineUploader("deleteFile", uploaded[u].id);
+            }
+        }
+
+        if (deletingNum == 0) {
+            window.location.href = '@Url.Action(Model.SuccessAction, Model.SuccessController)';
+            }
+        };
+
+        vm.addItem = function() {
+            var newItem = {
+                RefundItemID: ko.observable(--currentItemID),
+                RefundID: ko.observable(vm.RefundID),
+                Activity: ko.observable(""),
+                Category: ko.observable(0),
+                SubCategory: ko.observable(0),
+                KM: ko.observable(0),
+                Date: ko.observable(""),
+                CategorySpecification: ko.observable(0),
+                OtherSpecification: ko.observable(""),
+                Value: ko.observable(0.0),
+                Files: ko.observableArray(),
+                Sent: ko.observable(false)
+            };
+            var beforeKMValue = -1;
+            var updateKmValue = function(newValue) {
+                if (newItem.Category() != 1 || newItem.SubCategory() != 1) {
+                    if (beforeKMValue != -1) {
+                        newItem.Value(beforeKMValue);
+                        beforeKMValue = -1;
+                    }
+                    return;
+                }
+                if (beforeKMValue == -1) {
+                    beforeKMValue = newItem.Value();
+                }
+                var rate = parseFloat('@Html.Raw(RefundConstants.KM_RATE.ToString(CultureInfo.InvariantCulture).Replace(',', '.'))');
+                newItem.Value(Math.round(newItem.KM() * rate * 100) / 100);
+        };
+
+        newItem.Category.subscribe(updateKmValue);
+        newItem.SubCategory.subscribe(updateKmValue);
+        newItem.KM.subscribe(updateKmValue);
+
+        vm.Refund.RefundItems.push(newItem);
+        processInputStyles();
+        var form = $('#refund-form').removeData("validator").removeData("unobtrusiveValidation");
+        $(":input[data-val-required]").attr("data-val-required", "Por favor insira as informações");
+        $.validator.unobtrusive.parse(form);
+    };
+
+    vm.afterAddItem = function (element, index, data) {
+        $(element).filter("div").hide(0);
+        $(element).filter("div").slideDown(500);
+        $(element).filter("div").anchorAnimate();
+    };
+
+    vm.removeItem = function (i) {
+        var t = fineBindings.get(i);
+        $(t).fineUploader("cancelAll");
+        deletedFines.push(i);
+        vm.Refund.RefundItems.remove(i);
+    };
+
+    vm.beforeRemoveItem = function (element, index, data) {
+        $(element).filter("div").slideUp(500);
+    };
+
+    vm.SendForm = function() {
+        vm.Submit();
+    };
+
+    ko.applyBindings(vm);
+
+    var targetItem = window.location.hash;
+    if (targetItem > 0) {
+        $("#" + targetItem).anchorAnimate();
+    }
+    processInputStyles();
+    });
+    
+    function isFileAPIEnabled() {
+        return !!window.FileReader;
+    }
+
+    var proccessFineUpload = function(t, viewModel) {
+        /**
+        * Selects End Point Based on browser's technology
+        */
+        fineBindings.put(viewModel, t);
+        var endPoint = '/api' + '@Url.Action("FineUpload", "Files")';
+        var deleteEndPoint = '/api' + '@Url.Action("FineDelete", "Files")';
+        var sessionPoint = '/api' + '@Url.Action("RefundItemSession", "Files")';
+        if (!isFileAPIEnabled()) {
+            endPoint = '/api' + '@Url.Action("FineUploadIe9", "Files")';
+            deleteEndPoint = '/api' + '@Url.Action("FineDeleteIe9", "Files")';
+            sessionPoint = '/api' + '@Url.Action("RefundItemSessionIe9", "Files")';
+        }
+        var maxNameLength = 18;
+        var options = {
+            debug: true,
+            element: t,
+            formatFileName: function(name) {
+                if (name.length > maxNameLength) {
+                    return name.substr(0, 9) + "..." + name.substr(name.length - 6, name.length - 1);
+                }
+                return name;
+            },
+            request: {
+                endpoint: endPoint,
+                customHeaders: {
+                    Accept: 'application/json'
+                },
+            },
+            deleteFile: {
+                enabled: true,
+                confirmMessage: "Tem certeza que deseja deletar {filename}?",
+                deletingFailedText: "Não foi possível deletar o anexo",
+                deletingStatusText: "Deletando...",
+                endpoint: deleteEndPoint,
+                method: 'POST'
+            },
+            template: 'qq-template',
+            validation: {
+                allowedExtensions: ['jpeg', 'jpg', 'gif', 'png', 'pdf']
+            },
+            messages: {
+                tooManyFilesError: "Você só pode escolher um arquivo.",
+                unsupportedBrowser: "Erro Crítico: seu navegador não permite o upload de imagens."
+            },
+            text: {
+                failUpload: "Falha no upload",
+                formatProgress: "{percent}% de {total_size}",
+                paused: "Pausado",
+                waitingForResponse: "Enviando..."
+            },
+            retry: {
+                enableAuto: true
+            }
+        };
+
+        if (viewModel.Files() != null && viewModel.Files().length > 0) {
+            options.session = {
+                params: { id: viewModel.RefundItemID() },
+                endpoint: sessionPoint,
+                customHeaders: {
+                    'x-ms-version': '2013-08-15',
+                    'MaxDataServiceVersion': '3.0',
+                    'Accept': 'application/json;odata=nometadata'
+                }
+            };
+        } else {
+            viewModel.Files([]);
+        }
+
+        t.fineUploader(options).
+            on("submitted", function (event, id, name) {
+                var newFile = {
+                    LocalID: id,
+                    Name: name
+                };
+                viewModel.Files.push(newFile);
+            }).on("complete", function (event, id, name, responseJSON) {
+                var uuid = $(this).fineUploader("getUuid", id);
+                for (var i = 0; i < viewModel.Files().length; i++) {
+                    var file = viewModel.Files()[i];
+                    if (file.LocalID == id) {
+                        console.log("File match!");
+                        file.FilePath = uuid;
+                        break;
+                    }
+                }
+            }).on("cancel", function (event, id, name) {
+                console.log("Canceled!");
+                for (var i = 0; i < viewModel.Files().length; i++) {
+                    var file = viewModel.Files()[i];
+                    if (file.LocalID == id) {
+                        viewModel.Files.splice(i, 1);
+                        break;
+                    }
+                }
+            }).on("delete", function (event, id) {
+
+                console.log("Delete: " + id);
+
+            }).on("deleteComplete", function (event, id) {
+                for (var i = 0; i < viewModel.Files().length; i++) {
+                    var file = viewModel.Files()[i];
+                    if (file.LocalID == id) {
+                        viewModel.Files.splice(i, 1);
+                        break;
+                    }
+                }
+                if (deletingNum == 0) {
+                    window.location.href = '@Url.Action(Model.SuccessAction, Model.SuccessController)';
+                }
+            }).on("sessionRequestComplete", function (event, response, success) {
+                console.log("Session loaded");
+                var uploads = $(this).fineUploader("getUploads");
+                for (var i = 0; i < uploads.length; i++) {
+                    var upload = uploads[i];
+                    for (var u = 0; u < viewModel.Files().length; u++) {
+                        var file = viewModel.Files()[i];
+                        if (file.FilePath() == upload.uuid) {
+                            console.log("ID MATCH: " + upload.id + " for: " + upload.uuid);
+                            file.LocalID = upload.id;
+                            break;
+                        }
+                    }
+                }
+            });
+    };
+</script>
+
+<script>
+    $(window).resize(function () {
+        if ($(window).width() < 408) {
+            $('.btn-group-responsive').removeClass('btn-group btn-group-justified');
+            $('.btn-group-responsive').addClass('btn-group-vertical');
+        } else {
+            $('.btn-group-responsive').addClass('btn-group btn-group-justified');
+            $('.btn-group-responsive').removeClass('btn-group-vertical');
+        }
+    });
+</script>
+
+<script type="text/template" id="qq-template">
+    <div class="qq-uploader-selector qq-uploader clearfix">
+        <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
+            <span>Arraste arquivos para adicionar como anexo</span>
+        </div>
+        <span class="qq-drop-processing-selector qq-drop-processing">
+            <span>Processando arquivos arrastados...</span>
+        </span>        
+        <div class="qq-upload-button-selector file-bt col-lg-3 col-md-4 col-sm-6 col-xs-12 file-wrapper">
+            <div>
+                <strong>Adicionar Anexo</strong></br>
+                (ou arraste arquivos para esta caixa)
+            </div>
+        </div>
+        <ul class="qq-upload-list-selector qq-upload-list">
+            <li class="col-lg-3 col-md-4 col-sm-6 col-xs-12 file-wrapper">
+                <div class="qq-progress-bar-container-selector">
+                    <div class="qq-progress-bar-selector qq-progress-bar file-progress-bar"></div>
+                </div>
+                <span class="qq-upload-spinner-selector"></span>
+                <div class="file-thumbnail-wrapper">
+                    <span class="align-helper"></span>
+                    <img class="qq-thumbnail-selector" qq-max-size="130" style="width: 130px;">
+                </div>
+
+                <div class="file-content-wrapper">
+                    <div style="background-color: rgba(255,255,255,.75); margin: 5px 20px;">
+                        <span class="qq-edit-filename-icon-selector qq-edit-filename-icon"></span>
+                        <span class="qq-upload-file-selector qq-upload-file"></span><br/>
+                        <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
+                        <span class="qq-upload-size-selector qq-upload-size"></span>
+                    </div>
+
+                    <!--<a class="qq-upload-cancel-selector file-action-bt" href="#">Cancelar</a>
+                    <a class="qq-upload-retry-selector file-action-bt" href="#">Tentar Novamente</a>-->
+                    <a class="qq-upload-delete-selector file-action-bt" href="#">Remover</a>   
+                </div>             
+
+                
+            </li>
+        </ul>
+    </div>
+</script>

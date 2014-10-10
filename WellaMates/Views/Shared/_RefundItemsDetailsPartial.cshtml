@@ -1,0 +1,52 @@
+﻿@using WellaMates.Models
+@model WellaMates.Models.RefundItem
+
+<div class="info-container clearfix">
+    
+    <div class="col-xs-12 clearfix">
+        <img src="~/Content/images/empty.png" class="icons" style="background-position: 0 -140px" title="Atividade"/>
+        <h3 class="hidden-xs">Atividade</h3>
+        <div class="item-info-content">
+            <p>@Model.Activity</p>
+        </div>
+    </div>
+    
+    <div class="col-sm-6 clearfix">
+        @{ Html.RenderPartial("_RefundItemCategoryPartial", Model.Category); }
+        <h3 class="hidden-xs">Categoria</h3>
+        <div class="item-info-content">
+            @if (Model.Category == RefundItemCategory.OTHER)
+            {
+                <p>@Model.OtherSpecification</p>
+            }
+            else
+            {
+                <p>@{ Html.RenderPartial("_RefundItemCategoryNamePartial", Model.Category); }</p>
+            }
+        </div>
+    </div>
+
+    <div class="col-sm-6 clearfix">
+        <img src="~/Content/images/empty.png" class="icons" style="background-position: -350px -70px" title="Data do Evento"/>
+        <h3 class="hidden-xs">Atualizado em</h3>
+        <div class="item-info-content">
+            <p>@Model.History.Last().Date.ToString("dd/MM/yyyy")</p>
+        </div>
+    </div>
+
+    <div class="col-sm-6 clearfix">
+        <img src="~/Content/images/empty.png" class="icons" style="background-position: -280px -70px" title="Valor"/>
+        <h3 class="hidden-xs">Valor Total</h3>
+        <div class="item-info-content">
+            <p>R$ @Model.Value</p>
+        </div>
+    </div>
+
+    <div class="col-sm-6 clearfix">
+        <img src="~/Content/images/empty.png" class="icons" style="background-position: -140px -140px" title="Esperando pelo Supervisor"/>
+        <h3 class="hidden-xs">Código</h3>
+        <div class="item-info-content">
+            <p>@Model.RefundID</p>
+        </div>
+    </div>
+</div>

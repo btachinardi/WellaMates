@@ -1,0 +1,27 @@
+﻿@using WellaMates.Models
+@model WellaMates.Models.RefundItemCategory
+
+@switch (Model)
+{
+    case RefundItemCategory.MEAL:
+        <text>Alimentação</text>
+        break;
+    case RefundItemCategory.TELEPHONE:
+        <text>Telefonia</text>
+        break;
+    case RefundItemCategory.TRANSPORTATION:
+        <text>Transporte</text>
+        break;
+    case RefundItemCategory.OTHER:
+        <text>Outros</text>
+        break;
+    case RefundItemCategory.XEROX_COPY:
+        <text>Xerox/Cópia</text>
+        break;
+    case RefundItemCategory.MAIL_SEDEX:
+        <text>Correio/Sedex</text>
+        break;
+    case RefundItemCategory.LUGGAGE:
+        <text>Excesso de Bagagem</text>
+        break;
+}

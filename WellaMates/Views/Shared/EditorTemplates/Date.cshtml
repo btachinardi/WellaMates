@@ -1,0 +1,7 @@
+﻿@model DateTime?
+
+@Html.TextBox("", (Model.HasValue ? Model.Value.ToShortDateString() : string.Empty), new { 
+    @class = "datepicker",
+    data_date_format = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern.ToLower(),
+    data_val_date = "O campo {0} deve ser uma data"
+})

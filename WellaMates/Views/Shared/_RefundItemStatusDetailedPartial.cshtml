@@ -1,0 +1,7 @@
+﻿@using WellaMates.Models
+@model WellaMates.Models.RefundItem
+
+
+@{ Html.RenderPartial("_RefundItemStatusPartial", Model.Status); }
+<br/>
+@{ Html.RenderPartial("_RefundItemStatusNamePartial", Model.Status); }

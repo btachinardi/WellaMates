@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Section = "Administrator";
+    //Layout = "~/Views/Shared/_Layout.cshtml"; 
+    Layout = "~/Views/Shared/_BootstrapLayout.basic.cshtml";
+}
+
+@section header
+{
+    @using (var nav = Html.Bootstrap().Begin(new Nav().Style(NavType.Pills)))
+    {
+        @nav.ActionLink("Freelancers", "Index", "ManageBrokers")
+        @nav.ActionLink("Gerentes", "Index", "ManageManager")
+        @nav.ActionLink("Administradores", "Index", "ManageCoordinator")
+        @nav.ActionLink("Reembolsos", "Index", "ManageSales")
+        @nav.ActionLink("Arquivos", "Index", "ManageReward")
+    }
+}
+
+
+@RenderBody()
+@section scripts { @RenderSection("scripts", required:false) }
+@section featured { @RenderSection("featured", required:false) }

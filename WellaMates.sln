@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WellaMates", "MACPortal\WellaMates.csproj", "{A5635E69-A3E9-4AAC-99C8-8365BADC2BD8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WellaMates", "WellaMates\WellaMates.csproj", "{A5635E69-A3E9-4AAC-99C8-8365BADC2BD8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,11 @@
+﻿@using WellaMates.Models
+@model WellaMates.Models.RefundItem
+
+
+@Html.DisplayFor(modelItem => Model.Value)
+@{
+    if (Model.SubCategory == RefundItemSubCategory.TRANSPORTATION_KM)
+    {
+        <text><br />(@Model.KM KMs)</text>
+    }
+}

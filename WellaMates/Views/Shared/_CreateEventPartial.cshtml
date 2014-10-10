@@ -1,0 +1,73 @@
+﻿@using Microsoft.Web.Mvc.Controls
+@model WellaMates.ViewModel.CreateEventVM
+
+<div class="container" style="padding-bottom: 20px; padding-top: 20px;">
+    <p id="validation-error" style="display:none;color:#d30f44;margin: 30px;font-weight: 500;font-size: 24px;">Alguns dos campos do formulário estão inválidos:</p>
+    <form class="border-fix form-horizontal" id="refund-form">
+
+                                       <!-- TARGET ID -->
+        <input type="hidden" data-bind="value: EventID" />
+
+        <!-- STRING: NAME -->
+        <div class="input-style col-lg-4 form-group disabled">                 <!-- INPUT NAME -->
+            <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="Name">
+            <!-- LABEL -->
+                Evento<span class="required">*</span>
+            </label>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                              <!-- FIELD NAME -->                                                      <!-- VALIDATION MSG -->                      <!-- VALIDATION LENGTH -->                         <!-- VALIDATION MSG -->                     <!--INPUT NAME-->
+               <input data-bind="value: Name" class="form-control" data-val="true" data-val-length="O Evento não deve conter mais de 40 caracteres." data-val-length-max="40" data-val-required="O campo &#39;Evento&#39; é obrigatório" type="text" name="Name" />
+                                                               <!-- INPUT NAME -->
+                <span class="field-validation-valid" data-valmsg-for="Name" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <!-- DATE: START DATE -->
+        <div class=" input-style col-lg-4 form-group">                        <!-- INPUT NAME -->
+            <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="StartDate">
+                <!-- LABEL -->
+                Início<span class="required">*</span>
+            </label>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                 <!-- FIELD NAME -->                                                     <!-- VALIDATION MSG -->                         <!-- VALIDATION MSG -->                <!--   INPUT NAMES   -->
+                <input data-bind="value: StartDate" class="form-control" data-val="true" data-val-date="Formato da data invalido." data-val-required="O campo &#39;Início&#39; é obrigatório" id="StartDate" name="StartDate" type="date" value="01/01/0001 00:00:00" />
+                                                                <!-- INPUT NAME -->
+                <span class="field-validation-valid" data-valmsg-for="StartDate" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+        
+        <!-- DATE: END DATE -->
+        <div class=" input-style col-lg-4 form-group">                        <!-- INPUT NAME -->
+            <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="EndDate">
+            <!-- LABEL -->
+                Término<span class="required">*</span>
+            </label>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <!-- FIELD NAME -->                                                     <!-- VALIDATION MSG -->                         <!-- VALIDATION MSG -->      <!--   INPUT NAMES   -->
+                <input data-bind="value: EndDate" class="form-control" data-val="true" data-val-date="Formato da data invalido." data-val-required="O campo &#39;Término&#39; é obrigatório" id="EndDate" name="EndDate" type="date" value="01/01/0001 00:00:00" />
+                                                                <!-- INPUT NAME -->
+                <span class="field-validation-valid" data-valmsg-for="EndDate" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <!-- TEXTBOX: COMMENTS -->
+        <div class=" col-lg-12 form-group">                                      <!-- INPUT NAME -->
+            <label class="control-label col-xs-12 col-sm-12 col-md-12 col-lg-12" for="Comments">
+                <!-- LABEL -->
+                Comentários<span class="required">*</span>
+            </label>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                     <!-- FIELD NAME -->                                                          <!-- VALIDATION MSG -->                  <!--   INPUT NAMES   -->
+                <textarea data-bind="value: Comments" class="form-control" data-val="true" data-val-required="O campo &#39;Comentários&#39; é obrigatório" id="Comments" name="Comments" rows="2">
+                </textarea>
+                                                                <!-- INPUT NAME -->
+                <span class="field-validation-valid" data-valmsg-for="Comments" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+        
+        <!-- REFUND -->
+        @{Html.RenderPartial("_CreateRefundItemPartial");}
+        <!-- SUBMIT BUTTON -->
+        @{ Html.RenderPartial("_CreateButtonPartial", Model.SubmitText);}
+</form>
+</div>

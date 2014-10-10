@@ -1,0 +1,24 @@
+﻿@using WellaMates.Models
+@model WellaMates.Models.RefundItemSubCategory
+
+@switch (Model)
+{
+    case RefundItemSubCategory.TRANSPORTATION_BUS_TICKET:
+        <text>Passagem Rodoviária</text>
+        break;
+    case RefundItemSubCategory.TRANSPORTATION_KM:
+        <text>KM</text>
+        break;
+    case RefundItemSubCategory.TRANSPORTATION_TAXI:
+        <text>Taxi</text>
+        break;
+    case RefundItemSubCategory.TRANSPORTATION_TOOL:
+        <text>Pedágio</text>
+        break;
+    case RefundItemSubCategory.MEAL_DINNER:
+        <text>Jantar</text>
+        break;
+    case RefundItemSubCategory.MEAL_LUNCH:
+        <text>Almoço</text>
+        break;
+}

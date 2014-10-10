@@ -1,0 +1,16 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+@{
+    ViewBag.Title = "Erro";
+    Layout = "~/Views/Shared/_LayoutAllUsers.cshtml";
+}
+@section featured {
+    <section class="featured col-xs-12">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>@ViewBag.Title</h1>
+            </hgroup>
+            <h3>Um erro inexperado ocorreu. Por favor contacte o Administrador do Sistema.</h3>
+        </div>
+    </section>
+}

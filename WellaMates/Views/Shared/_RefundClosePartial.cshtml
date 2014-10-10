@@ -1,0 +1,20 @@
+﻿@using WellaMates.Models
+@model WellaMates.Models.Refund
+<form id="close-form" action="/RefundAdministrator/CloseRefund" method="post" novalidate="novalidate">
+    <hr>
+    <input type="hidden" value="@Model.RefundID" id="RefundID" name="RefundID"/>
+        
+    <div class="col-xs-12 form-group input-style">
+        <label class="control-label col-xs-12" >
+            Data para o Pagamento
+        </label>
+        <div class="col-xs-12">
+            <input class="form-control " data-val="true" data-val-required="O campo &#39;Data para o Pagamento?&#39; é obrigatório" type="date" id="PaymentDate" name="PaymentDate">
+            <span class="field-validation-valid" data-valmsg-replace="true"></span>
+        </div>
+    </div>
+
+
+    <input type="submit" value="Finalizar" class="btn btn-default" style="width: 150px;margin-right: 30px;margin-top: 50px;">
+</form>
+

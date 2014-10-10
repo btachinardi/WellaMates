@@ -1,0 +1,24 @@
+﻿@model List<object>
+
+<ul>
+    @{
+        foreach (var item in Model)
+        {
+            <li>
+                @{
+                    if (item is string)
+                    {
+                        <p>@item</p>
+                    }
+                    else if (item is List<object>)
+                    {
+                        var list = item as List<object>;
+                        <p>@list[0]</p>
+                        {list.RemoveAt(0);}
+                        { Html.RenderPartial("_ListPartial", list); }
+                    }
+                }
+            </li>
+        }
+    }
+</ul>

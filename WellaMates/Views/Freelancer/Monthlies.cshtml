@@ -1,0 +1,82 @@
+﻿@model WellaMates.ViewModel.FreelancerMonthliesVM
+@using PagedList.Mvc; 
+@using WellaMates.Models
+
+@{
+    ViewBag.Title = "Mensais";
+    Layout = "~/Views/Shared/_LayoutMember.cshtml";
+    ViewBag.DisableBackBt = true;
+}
+
+<div class="content-title clearfix">
+    <div class="fade-line-left"></div><h1><i>Mensais</i></h1><div class="fade-line-right"></div><br/>
+</div>
+
+
+
+<div class="container clearfix" style="margin-top: 20px;">
+    <div class="col-lg-4 col-md-5 col-sm-5 col-xs-12" style="margin-bottom: 20px;">
+        @Html.Bootstrap().ActionLinkButton("Novo Mensal", "CreateMonthly").Size(ButtonSize.Large).ButtonBlock()
+    </div>
+    <div class="col-lg-4 col-lg-push-4 col-md-5 col-md-push-2 col-sm-7 col-xs-12">
+            @using (var f = Html.Bootstrap().Begin(new Form().Type(FormType.Horizontal).FormMethod(FormMethod.Get).Class("search-form")))
+            {
+                <div class="col-sm-9 col-sm-push-3">
+                    @f.FormGroup().Class("input-style").TextBox("searchString").Placeholder("Busca").Value(ViewBag.CurrentFilter as string).WidthXs(12).Label().WidthXs(0).LabelText("")
+                </div>
+                <div class="col-sm-3 col-sm-pull-9">
+                    <input type="submit" value="" class="search-bt" />
+                </div>
+            }
+    </div>
+</div>
+@using (Html.Bootstrap().Begin(new Table().Striped().Hover()))
+{
+    <tr>
+        <th class="hidden-xs hidden-sm">
+            @Html.TableHeaderFor(m => m.Monthlies.First().MonthlyID)
+        </th>
+        <th>
+            @Html.TableHeaderFor("Mês", m => m.Monthlies.First().MonthStart)
+        </th>
+        <th>
+            @Html.TableHeaderFor(m => m.Monthlies.First().Refund.Value)
+        </th>
+        <th>
+            @Html.TableHeaderFor(m => m.Monthlies.First().Refund.Status)
+        </th>
+        <th>
+        </th>
+    </tr>
+    
+    foreach (var item in Model.Monthlies)
+    {
+        <tr>
+            <td class="hidden-xs hidden-sm">
+                @Html.DisplayFor(modelItem => item.MonthlyID)
+            </td>
+            <td>
+                @item.MonthStart.ToString("MM/yy")
+            </td>
+            <td>
+                <b>R$</b>@Html.DisplayFor(modelItem => item.Refund.Value)
+            </td>
+            <td>
+                <span class="hidden-sm hidden-xs">@{ Html.RenderPartial("_RefundStatusPartial", item.Refund.Status); }</span>
+                @{ Html.RenderPartial("_RefundStatusNamePartial", item.Refund.Status); }
+            </td>
+            <td>
+                <a class="" href="@Url.Action("MonthlyDetail", "Freelancer")/@item.MonthlyID">Detalhes</a>
+            </td>
+        </tr>
+    }
+}
+<br />
+<div class="pagination-right">
+    <div style="float: right">
+        @Html.PagedListPager(Model.Monthlies, page => Url.Action("Monthlies", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+    </div>
+    <div style="float: right; height: 100px;margin-top: 7px;">
+        <b>Página @(Model.Monthlies.PageCount < Model.Monthlies.PageNumber ? 0 : Model.Monthlies.PageNumber) de @Model.Monthlies.PageCount</b>
+    </div>
+</div>

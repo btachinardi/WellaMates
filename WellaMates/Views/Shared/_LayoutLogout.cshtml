@@ -1,0 +1,23 @@
+﻿@{
+    //Layout = "~/Views/Shared/_Layout.cshtml"; 
+    ViewBag.InverseNavigation = true;
+    Layout = "~/Views/Shared/_BootstrapLayout.basic.cshtml";
+}
+
+<div class="logout-image border-bottom-gradient">
+    <img src="~/Content/images/background-woman.png" alt="Ilustração Login"/>
+</div>
+<div class="logout-content">
+    <div class="container" style="margin-bottom: 15px">
+        @using (var nav = Html.Bootstrap().Begin(new Nav().Style(NavType.Pills).SetLinksActiveByControllerAndAction().Class("logout-nav")))
+        {
+            @nav.ActionLink("Login", "Login", "Account")
+            @nav.ActionLink("Esqueci Minha Senha", "ForgotPassword", "Account")
+            @nav.ActionLink("Fale Conosco", "Contact", "Account")
+        }
+    </div>
+    @RenderBody()
+</div>
+@RenderSection("PostContent", required:false)
+@section scripts { @RenderSection("scripts", required:false) }
+@section featured { @RenderSection("featured", required:false) }
